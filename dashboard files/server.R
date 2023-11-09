@@ -4,9 +4,7 @@ library(rsconnect)
 library(tidyr)
 library(sf)
 library(leaflet)
-# library(stringr)
-# library(jsonlite)
-# library(magrittr)
+library(stringr)
 library(tidyverse)
 library(mapview)
 library(plotly)
@@ -310,7 +308,7 @@ ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
                 labFormat = function(type, cuts, p) {   
                   return(paste0(prefix, labels_map, suffix))
                 },
-                values = round(quantile(dat.sf()$variable, probs = c(0, 0.2, 0.4, 0.6, 0.8, 1))),
+                values = quantile(dat.sf()$variable, probs = c(0, 0.19, 0.39, 0.59, 0.8, 1)),
               position = "bottomright") %>%
       addLabelOnlyMarkers(data = dat.sf(), ~dat.sf()$lon, ~dat.sf()$lat, 
                           label = ~as.character(dat.sf()$county),
@@ -321,12 +319,10 @@ ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
                             style = list(
                               "color" = "white",
                               "font-family" = "sans-serif",
-                              "font-size" = "10px",
-                              "text-shadow" = "-0.25px -0.25px 0 #C0C0C0, 0.25px -0.25px 0 #C0C0C0, -0.25px 0.25px 0 #C0C0C0, 0.25px 0.25px 0 #C0C0C0" # Dark gray outline
-                            )
-                          ),
-                          group = "county names"
-      ) %>%
+                              "font-size" = "12px",
+                              "text-shadow" = "-0.25px -0.25px 0 #607d8b, 0.25px -0.25px 0 #607d8b, -0.25px 0.25px 0 #607d8b, 0.25px 0.25px 0 #607d8b" # Dark gray outline
+                            )),
+                          group = "county names") %>%
       addPolygons(data = rural,
         color = "orchid",
         weight = 5,
