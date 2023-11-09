@@ -9,6 +9,7 @@ library(tidyverse)
 library(mapview)
 library(plotly)
 library(DT)
+library(scales)
 
 
 #### Data processing ####  
@@ -108,10 +109,14 @@ server <- function(input, output, session) {
   #### reactive palette ####
   mapPalette <- reactive({
     leaflet::colorQuantile(
+      na.color = "gray",
       palette = "YlGnBu",
       domain = NULL,
-      reverse = FALSE,
-      probs = c(0, 0.2, 0.4, 0.6, 0.8, 1))})
+      n = 5, 
+      reverse = FALSE
+      # ,
+      # probs = c(0, 0.2, 0.4, 0.6, 0.8, 1)
+      )})
   
   #### bar plot ####
   output$plot <- renderPlotly({
@@ -230,6 +235,11 @@ ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
   })
 
   #### Leaflet prep ####
+
+  ####format legend labels ####
+formatCuts <- function(value) {
+  return(sprintf("%.1f", value)) # Formats the number with one decimal place
+}
   ##### title #####
   title_dat <- tags$div(
     HTML("<strong>Indicators by County</strong><br/>
@@ -300,16 +310,38 @@ ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
                     dashArray = "",
                     fillOpacity = 0.5,
                     bringToFront = TRUE),
-                  label = labs_dat()) %>%
+                  label = labs_dat(),
+                  group = "counties") %>%
       addControl(title_dat, position = "bottomright") %>%
-      addLegend(pal = mapPalette(), 
-                title = paste(as.character(alias), "<br>(Quintile breaks)", sep = ""), 
-                opacity = 1, 
-                labFormat = function(type, cuts, p) {   
-                  return(paste0(prefix, labels_map, suffix))
+      addLegend(group = "counties",
+                pal = mapPalette(),
+                title = paste(as.character(alias), "<br>(Quintile breaks)", sep = ""),
+                opacity = 1,
+                labFormat = function(type, cuts, p) {
+                  labels <- character(length(cuts) - 1)
+                  for (i in 1:(length(cuts) - 1)) {
+                    if (i == 1) {
+                      labels[i] <- paste("<", formatCuts(cuts[i+1]))
+                    } else if (i < length(cuts) - 1) {
+                      labels[i] <- paste(formatCuts(cuts[i]), "-", formatCuts(cuts[i+1]))
+                    } else {
+                      labels[i] <- paste("≥", formatCuts(cuts[i]))
+                    }
+                  }
+                  labels <- paste0(prefix, labels, suffix)
+                  return(labels)
                 },
-                values = quantile(dat.sf()$variable, probs = c(0, 0.19, 0.39, 0.59, 0.8, 1)),
-              position = "bottomright") %>%
+                values = quantile(dat.sf()$variable, probs = c(0, 0.2, 0.4, 0.6, 0.8, 1)),
+                position = "bottomright") %>%
+      # addLegend(group = "counties",
+      # pal = mapPalette(),
+      #           title = paste(as.character(alias), "<br>(Quintile breaks)", sep = ""),
+      #           opacity = 1,
+      #           labFormat = function(type, cuts, p) {
+      #             return(paste0(prefix, labels_map, suffix))
+      #           },
+      #           values = quantile(dat.sf()$variable, probs = c(0, 0.2, 0.4, 0.6, 0.8, 1)),
+      #         position = "bottomright") %>%
       addLabelOnlyMarkers(data = dat.sf(), ~dat.sf()$lon, ~dat.sf()$lat, 
                           label = ~as.character(dat.sf()$county),
                           labelOptions = labelOptions(
