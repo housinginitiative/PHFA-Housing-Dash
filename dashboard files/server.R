@@ -86,6 +86,20 @@ variable_suffix <- c(
   "housing_balance" = " units"
 )
 
+# variable type
+variable_type <- c(
+  "owner_occ_hh_pct2021" = "percent",
+  "renter_occ_hh_pct2021" = "percent",
+  "renter_vacant_pct2021" = "percent",
+  "med_age_home2021" = "",
+  "med_home_value2021" = "currency",
+  "internet_hh_pct2021" = "percent",
+  "rent_burdened_pct2021" = "percent",
+  "mortgage_burdened_pct2021" = "percent",
+  "med_gross_rent2021" = "currency",
+  "afford_avail_units" = "",
+  "housing_balance" = ""
+)
 #### Server ####
 server <- function(input, output, session) {
 
@@ -236,10 +250,8 @@ ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
 
   #### Leaflet prep ####
 
-  ####format legend labels ####
-formatCuts <- function(value) {
-  return(sprintf("%.1f", value)) # Formats the number with one decimal place
-}
+
+  
   ##### title #####
   title_dat <- tags$div(
     HTML("<strong>Indicators by County</strong><br/>
@@ -279,6 +291,20 @@ formatCuts <- function(value) {
     prefix <- variable_prefix[v]
     suffix <- variable_suffix[v]
     var_map <- dat.sf()$variable
+    variableType <- variable_type[v]
+    
+    ####format legend labels ####
+    # Define the formatting function
+    formatValue <- function(value, type) {
+      if (type == "currency") {
+        return(scales::dollar(value))
+      } else if (type == "percent") {
+        return(scales::percent(value))
+      } else {
+        # Fallback to a default formatting if the type is not recognized
+        return(format(value))
+      }
+    }
 
     # legend labels
     labels_map <- c(
@@ -313,26 +339,6 @@ formatCuts <- function(value) {
                   label = labs_dat(),
                   group = "counties") %>%
       addControl(title_dat, position = "bottomright") %>%
-      addLegend(group = "counties",
-                pal = mapPalette(),
-                title = paste(as.character(alias), "<br>(Quintile breaks)", sep = ""),
-                opacity = 1,
-                labFormat = function(type, cuts, p) {
-                  labels <- character(length(cuts) - 1)
-                  for (i in 1:(length(cuts) - 1)) {
-                    if (i == 1) {
-                      labels[i] <- paste("<", formatCuts(cuts[i+1]))
-                    } else if (i < length(cuts) - 1) {
-                      labels[i] <- paste(formatCuts(cuts[i]), "-", formatCuts(cuts[i+1]))
-                    } else {
-                      labels[i] <- paste("≥", formatCuts(cuts[i]))
-                    }
-                  }
-                  labels <- paste0(prefix, labels, suffix)
-                  return(labels)
-                },
-                values = quantile(dat.sf()$variable, probs = c(0, 0.2, 0.4, 0.6, 0.8, 1)),
-                position = "bottomright") %>%
       # addLegend(group = "counties",
       # pal = mapPalette(),
       #           title = paste(as.character(alias), "<br>(Quintile breaks)", sep = ""),
@@ -342,6 +348,27 @@ formatCuts <- function(value) {
       #           },
       #           values = quantile(dat.sf()$variable, probs = c(0, 0.2, 0.4, 0.6, 0.8, 1)),
       #         position = "bottomright") %>%
+      addLegend(group = "counties",
+                pal = mapPalette(),
+                title = paste(as.character(alias), "<br>(Quintile breaks)", sep = ""),
+                opacity = 1,
+                labFormat = function(type, cuts, p) {
+                  labels <- vector("character", length(cuts) - 1)
+                  for (i in 1:(length(cuts) - 1)) {
+                    if (i == length(cuts) - 1) {
+                      # For the top bin, use the maximum value
+                      labels[i] <- paste("≥", paste0(prefix, format(cuts[i], nsmall = 2), suffix))
+                    } else {
+                      # For other bins, show the range
+                      labels[i] <- paste(paste0(prefix, format(cuts[i], nsmall = 2), suffix), "-", 
+                                         paste0(prefix, format(cuts[i + 1], nsmall = 2), suffix))
+                    }
+                  }
+                  return(labels)
+                },
+                values = quantile(dat.sf()$variable, probs = c(0, 0.2, 0.4, 0.6, 0.8, 1)),
+                position = "bottomright"
+      ) %>%
       addLabelOnlyMarkers(data = dat.sf(), ~dat.sf()$lon, ~dat.sf()$lat, 
                           label = ~as.character(dat.sf()$county),
                           labelOptions = labelOptions(
