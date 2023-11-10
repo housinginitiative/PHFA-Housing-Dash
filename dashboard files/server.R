@@ -283,7 +283,20 @@ ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
     ) %>% lapply(htmltools::HTML)
   })
 
-  
+  # Custom function to format numbers with commas for thousands
+  formatWithComma <- function(value) {
+    # Ensure the value is a numeric
+    value_num <- as.numeric(value)
+    
+    # Check if the value is 1000 or larger
+    if (value_num >= 1000) {
+      # Format with comma
+      return(format(value_num, big.mark = ",", scientific = FALSE))
+    } else {
+      # If less than 1000, return the value as is
+      return(value)
+    }
+  }
   output$leaflet <- renderLeaflet({
 
     v <- input$variable
@@ -346,13 +359,16 @@ ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
                 labFormat = function(type, cuts, p) {
                   labels <- vector("character", length(cuts) - 1)
                   for (i in 1:(length(cuts) - 1)) {
-                    lower_label <- paste0(prefix, trimws(format(cuts[i])), suffix)
-                    upper_label <- paste0(prefix, trimws(format(cuts[i + 1])), suffix)
-                      labels[i] <- paste(lower_label, "-", upper_label)
+                    # Apply the prefix and suffix to each bound
+                    lower_bound <- paste0(prefix, formatWithComma(cuts[i]), suffix)
+                    upper_bound <- paste0(prefix, formatWithComma(cuts[i + 1]), suffix)
+                    
+                    # Construct the label for each bin
+                      labels[i] <- paste(lower_bound, "-", upper_bound)
                   }
                   return(labels)
                 },
-                values = quantile(dat.sf()$variable, probs = c(0, 0.2, 0.4, 0.6, 0.8, 1)),
+                values = quantile(dat.sf()$variable, probs = c(0, 0.2, 0.4, 0.6, 0.8, 1), na.rm = TRUE),
                 position = "bottomright"
       ) %>%
       addLabelOnlyMarkers(data = dat.sf(), ~dat.sf()$lon, ~dat.sf()$lat, 
