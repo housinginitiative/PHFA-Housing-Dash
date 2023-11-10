@@ -339,15 +339,6 @@ ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
                   label = labs_dat(),
                   group = "counties") %>%
       addControl(title_dat, position = "bottomright") %>%
-      # addLegend(group = "counties",
-      # pal = mapPalette(),
-      #           title = paste(as.character(alias), "<br>(Quintile breaks)", sep = ""),
-      #           opacity = 1,
-      #           labFormat = function(type, cuts, p) {
-      #             return(paste0(prefix, labels_map, suffix))
-      #           },
-      #           values = quantile(dat.sf()$variable, probs = c(0, 0.2, 0.4, 0.6, 0.8, 1)),
-      #         position = "bottomright") %>%
       addLegend(group = "counties",
                 pal = mapPalette(),
                 title = paste(as.character(alias), "<br>(Quintile breaks)", sep = ""),
@@ -355,14 +346,9 @@ ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
                 labFormat = function(type, cuts, p) {
                   labels <- vector("character", length(cuts) - 1)
                   for (i in 1:(length(cuts) - 1)) {
-                    if (i == length(cuts) - 1) {
-                      # For the top bin, use the maximum value
-                      labels[i] <- paste("≥", paste0(prefix, format(cuts[i], nsmall = 2), suffix))
-                    } else {
-                      # For other bins, show the range
-                      labels[i] <- paste(paste0(prefix, format(cuts[i], nsmall = 2), suffix), "-", 
-                                         paste0(prefix, format(cuts[i + 1], nsmall = 2), suffix))
-                    }
+                    lower_label <- paste0(prefix, trimws(format(cuts[i])), suffix)
+                    upper_label <- paste0(prefix, trimws(format(cuts[i + 1])), suffix)
+                      labels[i] <- paste(lower_label, "-", upper_label)
                   }
                   return(labels)
                 },
@@ -379,7 +365,7 @@ ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
                               "color" = "white",
                               "font-family" = "sans-serif",
                               "font-size" = "12px",
-                              "text-shadow" = "-0.25px -0.25px 0 #607d8b, 0.25px -0.25px 0 #607d8b, -0.25px 0.25px 0 #607d8b, 0.25px 0.25px 0 #607d8b" # Dark gray outline
+                              "text-shadow" = "-0.5px -0.5px 0 #607d8b, 0.5px -0.5px 0 #607d8b, -0.5px 0.5px 0 #607d8b, 0.5px 0.5px 0 #607d8b" # Dark gray outline
                             )),
                           group = "county names") %>%
       addPolygons(data = rural,
