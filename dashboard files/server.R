@@ -14,7 +14,7 @@ library(scales)
 
 #### Data processing ####  
 # original data
-dat <- st_read("PHFA_dash_data_nov8.geojson") %>%
+dat <- st_read("PHFA_dash_data_11-20.geojson") %>%
   dplyr::mutate(housing_balance = ifelse(housing_balance < 0, abs(housing_balance), 0))
 
 # spatial panel
@@ -39,21 +39,20 @@ rural <- panel.sf %>%
   st_as_sf()
 
 # state averages for variables
-state_avg <- st_read("state_avg_nov8.csv")
+state_avg <- st_read("state_avg_11-20.csv")
 
 # variable aliases for display
 variable_aliases <- c(
-"owner_occ_hh_pct2021" = "Homeownership rate",
-"renter_occ_hh_pct2021" = "Rentership rate",
-"renter_vacant_pct2021" = "Vacant rental units",
-"med_age_home2021" = "Median age of home",
-"med_home_value2021" = "Median home value",
-"internet_hh_pct2021" = "Households with internet access",
-"rent_burdened_pct2021" = "Rent burdened households",
-"mortgage_burdened_pct2021" = "Mortgage burdened households",
-"med_gross_rent2021" = "Median gross rent",
-"afford_avail_units" = "Affordable rent units available",
-"housing_balance" = "Affordable housing shortage"
+"owner_occ_hh_pct2021" = "Homeownership rate (2021)",
+"renter_occ_hh_pct2021" = "Rentership rate (2021)",
+"renter_vacant_pct2021" = "Vacant rental units (2021)",
+"med_age_home2021" = "Median age of home (2021)",
+"med_home_value2021" = "Median home value (2021)",
+"internet_hh_pct2021" = "Households with internet access (2021)",
+"rent_burdened_pct2021" = "Rent burdened households (2021)",
+"mortgage_burdened_pct2021" = "Mortgage burdened households (2021)",
+"med_gross_rent2021" = "Median gross rent (2021)",
+"housing_balance" = "Affordable housing shortage (2021)"
 )
 
 # prefixes for legend labels 
@@ -67,7 +66,6 @@ variable_prefix <- c(
 "rent_burdened_pct2021" = "",
 "mortgage_burdened_pct2021" = "",
 "med_gross_rent2021" = "$",
-"afford_avail_units" = "",
 "housing_balance" = ""
 )
 
@@ -82,7 +80,6 @@ variable_suffix <- c(
   "rent_burdened_pct2021" = "%",
   "mortgage_burdened_pct2021" = "%",
   "med_gross_rent2021" = "",
-  "afford_avail_units" = " units",
   "housing_balance" = " units"
 )
 
@@ -97,7 +94,6 @@ variable_type <- c(
   "rent_burdened_pct2021" = "percent",
   "mortgage_burdened_pct2021" = "percent",
   "med_gross_rent2021" = "currency",
-  "afford_avail_units" = "",
   "housing_balance" = ""
 )
 #### Server ####
@@ -167,15 +163,14 @@ ggplotly(barp) %>%
   output$indicator_desc_text <- renderText({
   description <- c(
     "owner_occ_hh_pct2021" = "Homeownership rate (%) is the percentage of households that own their homes. A higher rate indicates a greater proportion of homeowners in the area.",
-    "renter_occ_hh_pct2021" = "Rentership rate (%) is the percentage of households that rent their homes. It provides insight into the proportion of the population that does not own property.",
+    "renter_occ_hh_pct2021" = "The rentership rate shows the share of households in a county that rent their homes. Younger households and households with limited incomes are more likely to rent than older households and households with higher incomes.",
     "renter_vacant_pct2021" = "Vacant rental units (%) represents the percentage of rental units that are currently unoccupied. A higher percentage can suggest that there's a surplus of rental housing or potentially decreased demand.",
     "med_age_home2021" = "Median age of home (years) indicates the midpoint age of homes in a specific area. Older median ages can suggest historical or older neighborhoods, while lower values might indicate newer developments.",
     "med_home_value2021" = "Median home value ($) is the midpoint value of homes in the area. This can provide an insight into the overall affordability and property values of a region.",
     "internet_hh_pct2021" = "Households with internet access (%) is the percentage of households that have access to the internet. This can provide insights into the area's technological infrastructure and development.",
-    "rent_burdened_pct2021" = "Rent burdened households (%) represents low-income households that spend 30% or more of their income on rent. Higher percentages can suggest issues with affordability for low-income renters.",
+    "rent_burdened_pct2021" = "Rent-burdened households represents the share of renter households with incomes less than $35,000 that spend 30% or more of their income on rent. Low-income households that spend a high share of their income on housing costs have limited residual income to spend on other household expenses, much less save for emergencies. These households are more vulnerable to setbacks to their household finances and to more wide scale economic shocks.",
     "mortgage_burdened_pct2021" = "Mortgage burdened households (%) indicates the low-income households spending 30% or more of their income on mortgage payments. Higher percentages may show potential financial strain for low-income homeowners.",
-    "med_gross_rent2021" = "Median gross rent ($) is the midpoint monthly rent amount households pay, inclusive of utilities. It helps gauge the typical rental costs in an area.",
-    "afford_avail_units" = "Affordable rent units available measures the total number of rental units in the area that are deemed affordable based on set income standards or thresholds.",
+    "med_gross_rent2021" = "Median gross rent conveys the midpoint amount that households pay in total for their contract rent, utilities, and fuel costs. Low-income households living in areas with higher median gross rent tend to have greater challenges with housing affordability.",
     "housing_balance" = "Affordable housing shortage (units) refers to the difference between the demand for affordable housing and the supply available. A positive number indicates a shortage of affordable housing units.")
     v <- input$variable
     desc <- description[v]
@@ -357,9 +352,7 @@ ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
                 labFormat = function(type, cuts, p) {
                   labels <- vector("character", length(cuts) - 1)
                   for (i in 1:(length(cuts) - 1)) {
-                    # Apply the prefix and suffix to each bound
-                    # lower_bound <- paste0(prefix, formatWithComma(cuts[i]), suffix)
-                    # upper_bound <- paste0(prefix, formatWithComma(cuts[i + 1]), suffix)
+                    # Apply the prefix and suffix to each bound + remove decimal points
                     lower_bound <- paste0(prefix, sprintf("%.0f", cuts[i]), suffix)
                     upper_bound <- paste0(prefix, sprintf("%.0f", cuts[i + 1]), suffix)
                     # Construct the label for each bin
