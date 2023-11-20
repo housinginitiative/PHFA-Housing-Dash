@@ -128,8 +128,6 @@ server <- function(input, output, session) {
       domain = NULL,
       n = 5, 
       reverse = FALSE
-      # ,
-      # probs = c(0, 0.2, 0.4, 0.6, 0.8, 1)
       )})
   
   #### bar plot ####
@@ -250,7 +248,6 @@ ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
 
   #### Leaflet prep ####
 
-
   
   ##### title #####
   title_dat <- tags$div(
@@ -321,12 +318,13 @@ ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
 
     # legend labels
     labels_map <- c(
-      as.character(round(quantile(var_map, probs = c(0.2)),1)),
-      as.character(round(quantile(var_map, probs = c(0.4)),1)),
-      as.character(round(quantile(var_map, probs = c(0.6)),1)),
-      as.character(round(quantile(var_map, probs = c(0.8)),1)),
-      as.character(round(quantile(var_map, probs = c(1)),1)))
+      as.character(round(quantile(var_map, probs = c(0.2)),0)),
+      as.character(round(quantile(var_map, probs = c(0.4)),0)),
+      as.character(round(quantile(var_map, probs = c(0.6)),0)),
+      as.character(round(quantile(var_map, probs = c(0.8)),0)),
+      as.character(round(quantile(var_map, probs = c(1)),0)))
     
+  
     #### Leaflet map ####
     leaflet(options = leafletOptions(minZoom = 7)) %>%
       addProviderTiles(providers$CartoDB.Positron) %>%
@@ -360,9 +358,10 @@ ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
                   labels <- vector("character", length(cuts) - 1)
                   for (i in 1:(length(cuts) - 1)) {
                     # Apply the prefix and suffix to each bound
-                    lower_bound <- paste0(prefix, formatWithComma(cuts[i]), suffix)
-                    upper_bound <- paste0(prefix, formatWithComma(cuts[i + 1]), suffix)
-                    
+                    # lower_bound <- paste0(prefix, formatWithComma(cuts[i]), suffix)
+                    # upper_bound <- paste0(prefix, formatWithComma(cuts[i + 1]), suffix)
+                    lower_bound <- paste0(prefix, sprintf("%.0f", cuts[i]), suffix)
+                    upper_bound <- paste0(prefix, sprintf("%.0f", cuts[i + 1]), suffix)
                     # Construct the label for each bin
                       labels[i] <- paste(lower_bound, "-", upper_bound)
                   }
