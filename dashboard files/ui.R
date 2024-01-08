@@ -1,6 +1,7 @@
 library(shiny)
 library(rsconnect)
 library(tidyr)
+library(shiny)
 library(shinythemes)
 library(bslib)
 library(leaflet)
@@ -136,21 +137,20 @@ ui <- navbarPage(
                              br(),
                              tableOutput("sum"),
                              br(),
-                             #downloadButton("downloadDataSel", "Selected indicator"),
                              downloadButton("downloadDataAll", "All indicators")))),
         tabPanel("About this site",
                  sidebarLayout(
                    sidebarPanel(img(src='PA.png', width = "100%"),
                              p("Source: The Brookings Institute.")),
-                   mainPanel(h4("Pennsylvania Housing Dashboard"),
-                             p("Last update: November 2023"),
+                   mainPanel(h2("Pennsylvania Housing Dashboard"),
+                             p("Last update: January 2024"),
                              p("This dashboard is a collaboration between the Pennsylvania Housing Finance Agency and the Housing Initiative at Penn. The dashboard shows current housing trends across Pennsylvania counties based on data from the U.S. Census Bureau 5-year American Community Survey and U.S. Department of Housing and Urban Development’s Comprehensive Housing Affordability Strategy."),
                              h4("About Pennsylvania Housing Finance Agency"), 
-                             p("The Pennsylvania Housing Finance Agency works to provide affordable homeownership and rental apartment options for older adults, low- and moderate-income families, and people with special housing needs. Through its carefully managed mortgage programs and investments in multifamily housing developments, as well as funding provided for community development projects, PHFA also promotes economic development across the Commonwealthstate."),
+                             p("The", a(href = "https://www.phfa.org/", "Pennsylvania Housing Finance Agency"), " works to provide affordable homeownership and rental apartment options for older adults, low- and moderate-income families, and people with special housing needs. Through its carefully managed mortgage programs and investments in multifamily housing developments, as well as funding provided for community development projects, PHFA also promotes economic development across the Commonwealthstate."),
                              h4("About Housing Initiative at Penn"),
-                             p("The Housing Initiative at Penn is a housing policy research initiative based in the University of Pennsylvania's Weitzman School of Design. We conduct rigorous academic and empirical research that advances evidence-based policymaking and analyze current conditions and future trends with the potential to affect housing. Our mission is to achieve more effective, equitable housing policy at the local, state, and national levels."),
+                             p("The", a(href='https://www.housinginitiative.org/', 'Housing Initiative at Penn'), " is a housing policy research initiative based in the University of Pennsylvania's Weitzman School of Design. We conduct rigorous academic and empirical research that advances evidence-based policymaking and analyze current conditions and future trends with the potential to affect housing. Our mission is to achieve more effective, equitable housing policy at the local, state, and national levels."),
                              h4("Methods"),
-                             p("All data in this dashboard comes from the American Community Survey's 2021 5-year-estimates, with the exception of the Affordable Housing Shortage variable, which is from HUD’s Comprehensive Housing Affordability Strategy dataset (2019). All census data was accessed through the US Census Bureau API using the tidycensus package in R. All data processing and preparation was completed using the following R packages: dplyr, tigris, sf, stringr, tidyr. This dashboard was made entirely using the R-language in Posit's R-Shiny app interface, and visualizations were made using the R packages leaflet, plotly, ggplot2, and pander. Full documentation for this project can be found here: [insert HIP github link]"),
+                             p("All data in this dashboard comes from the", a(href = "https://www.census.gov/programs-surveys/acs/news/data-releases.2021.html#list-tab-1133175109", "American Community Survey's"), " 2021 5-year-estimates, with the exception of the Affordable Housing Shortage variable, which is from HUD’s Comprehensive Housing Affordability Strategy dataset (2019). All census data was accessed through the US Census Bureau API using the tidycensus package in R. All data processing and preparation was completed using the following R packages: dplyr, tigris, sf, stringr, tidyr. This dashboard was made entirely using the R-language in Posit's R-Shiny app interface, and visualizations were made using the R packages leaflet, plotly, ggplot2, and pander. Full documentation for this project can be found here:", a(href='https://github.com/housinginitiative/PHFA-Housing-Dash', 'github repository')),
                              h4("Get in touch"),
                              p(HTML("For questions about this dashboard, please contact 
         Anna Duan, Housing Research Analyst, at 

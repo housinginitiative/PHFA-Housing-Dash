@@ -202,7 +202,7 @@ scatterp <- ggplot(df, aes(x = variable_scatter_x, y = variable_scatter_y)) +
 ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
          hoverinfo = "text") %>%
   plotly::layout(margin = list(l = 50, r = 50, b = 100, t = 50),
-                 annotations = list(x = 0.5, y = -0.2, text = "Source: Duan, Anna. Pennsylvania Affordable Housing Dashboard, Housing Initiative at Penn, Oct. 2023, annaduan09.shinyapps.io/PHFAdashOct26/. ",
+                 annotations = list(x = 0.5, y = -0.2, text = "Source: Duan, Anna. Pennsylvania Affordable Housing Dashboard, Housing Initiative at Penn, Jan. 2024, https://housinginitiative.shinyapps.io/PHFA_Housing_Dashboard/. ",
                                     xref='paper', yref='paper', showarrow = F,
                                     xanchor='center', yanchor='bottom', xshift=0, yshift=0,
                                     font = list(size = 12, color = "gray")))})
@@ -388,8 +388,7 @@ ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
       addLayersControl(position = "bottomright",
         overlayGroups = c("rural counties", "county names"), 
         options = layersControlOptions(collapsed = F))%>%
-      groupOptions("county names", zoomLevels = 8:100) %>%
-      groupOptions("rural counties", zoomLevels = 10:100)
+      groupOptions("county names", zoomLevels = 8:100)
   })
 
   
