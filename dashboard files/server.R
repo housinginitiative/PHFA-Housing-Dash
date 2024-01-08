@@ -34,7 +34,7 @@ panel <- st_drop_geometry(panel.sf)
 
 # rural counties
 rural <- panel.sf %>% 
-  dplyr::filter(rural != 1) %>%
+  dplyr::filter(rural == 1) %>%
   st_union() %>%
   st_as_sf()
 
@@ -120,7 +120,7 @@ server <- function(input, output, session) {
   mapPalette <- reactive({
     leaflet::colorQuantile(
       na.color = "gray",
-      palette = "YlGnBu",
+      palette = "Blues",
       domain = NULL,
       n = 5, 
       reverse = FALSE
@@ -144,7 +144,7 @@ server <- function(input, output, session) {
   
 barp <- ggplot(data = df, aes(x = reorder(county, order_id), y = variable_bar, fill = variable_bar)) +
       geom_bar(color = "transparent", stat = "identity", aes(fill = as.factor(rural))) +
-  scale_fill_manual(values = c("#41B6C4", "#A1DAB4")) +
+  scale_fill_manual(values = c("#4e72aa", "#94bcda")) +
       labs(title = paste(alias, "by PA county", sep = " "), caption = "Duan, Anna. Pennsylvania Affordable Housing Dashboard, Housing Initiative at Penn, Oct. 2023, annaduan09.shinyapps.io/PHFAdashOct3/. ", fill = alias, color = "Rural County", y = alias, x = "Urban Counties                                          Rural Counties") +
       theme_minimal() +
       theme(legend.position = "none") +
@@ -195,7 +195,7 @@ scatterp <- ggplot(df, aes(x = variable_scatter_x, y = variable_scatter_y)) +
   geom_point(stat = "identity", 
              aes(color = rural, text = hover_text), 
              size = 2, alpha = 0.8) +
-  scale_color_manual(values = c("#41B6C4", "#A1DAB4"), name = "Rural") +
+  scale_color_manual(values = c("#4e72aa", "#94bcda"), name = "Rural") +
   labs(title = paste(alias_x, "as a function of", alias_y, sep = " "),
        x = alias_x, y = alias_y) + theme_minimal()
 
@@ -372,8 +372,8 @@ ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
                             style = list(
                               "color" = "white",
                               "font-family" = "sans-serif",
-                              "font-size" = "12px",
-                              "text-shadow" = "-0.5px -0.5px 0 #607d8b, 0.5px -0.5px 0 #607d8b, -0.5px 0.5px 0 #607d8b, 0.5px 0.5px 0 #607d8b" # Dark gray outline
+                              "font-size" = "14px",
+                              "text-shadow" = "-0.25px -0.25px 0 #607d8b, 0.25px -0.25px 0 #607d8b, -0.25px 0.25px 0 #607d8b, 0.25px 0.25px 0 #607d8b" # Dark gray outline
                             )),
                           group = "county names") %>%
       addPolygons(data = rural,

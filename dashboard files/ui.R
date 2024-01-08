@@ -40,7 +40,7 @@ ui <- navbarPage(
                                                                                 "Housing stock" = list("Vacant rental units (2021)" = "renter_vacant_pct2021",
                                                                                                     "Median age of home (2021)" = "med_age_home2021",
                                                                                                     # "Affordable rent units available" = "afford_avail_units",
-                                                                                                    "Affordable housing shortage (2021)" = "housing_balance"),
+                                                                                                    "Affordable housing shortage (2020)" = "housing_balance"),
                                                                                 "Other topics" = list("Households with internet access (2021)" = "internet_hh_pct2021")), selected = "owner_occ_hh_pct2021"),
                        strong("About this indicator"),
                        p(textOutput("indicator_desc_text")),
@@ -62,7 +62,7 @@ ui <- navbarPage(
                                                                                                                           "Housing stock" = list("Vacant rental units (2021)" = "renter_vacant_pct2021",
                                                                                                                                                  "Median age of home (2021)" = "med_age_home2021",
                                                                                                                                                  # "Affordable rent units available" = "afford_avail_units",
-                                                                                                                                                 "Affordable housing shortage (2021)" = "housing_balance"),
+                                                                                                                                                 "Affordable housing shortage (2020)" = "housing_balance"),
                                                                                                                           "Other topics" = list("Households with internet access (2021)" = "internet_hh_pct2021")), selected = "owner_occ_hh_pct2021"),
                        selectInput("barp_counties", "Select counties to show", 
                                    choices = list(
@@ -97,7 +97,7 @@ ui <- navbarPage(
                                                                                                                                   "Housing stock" = list("Vacant rental units (2021)" = "renter_vacant_pct2021",
                                                                                                                                                          "Median age of home (2021)" = "med_age_home2021",
                                                                                                                                                          # "Affordable rent units available" = "afford_avail_units",
-                                                                                                                                                         "Affordable housing shortage (2021)" = "housing_balance"),
+                                                                                                                                                         "Affordable housing shortage (2020)" = "housing_balance"),
                                                                                                                                   "Other topics" = list("Households with internet access (2021)" = "internet_hh_pct2021")), selected = "owner_occ_hh_pct2021"),
                                 selectInput("variable_scatter_y", "Y variable",                                    choices = list("Homeowners" = list("Homeownership rate (2021)" = "owner_occ_hh_pct2021",
                                                                                                                                                       "Median home value (2021)" = "med_home_value2021",
@@ -108,7 +108,7 @@ ui <- navbarPage(
                                                                                                                                   "Housing stock" = list("Vacant rental units (2021)" = "renter_vacant_pct2021",
                                                                                                                                                          "Median age of home (2021)" = "med_age_home2021",
                                                                                                                                                          # "Affordable rent units available" = "afford_avail_units",
-                                                                                                                                                         "Affordable housing shortage (2021)" = "housing_balance"),
+                                                                                                                                                         "Affordable housing shortage (2020)" = "housing_balance"),
                                                                                                                                   "Other topics" = list("Households with internet access (2021)" = "internet_hh_pct2021")), selected = "owner_occ_hh_pct2021"),
                                 shiny::p("Use this scatter plot to visualize the relationship between any two housing indicators. Click on the home icon to reset zoom/axes."),
                                 out = 
@@ -127,7 +127,7 @@ ui <- navbarPage(
                                                                                                                                    "Housing stock" = list("Vacant rental units (2021)" = "renter_vacant_pct2021",
                                                                                                                                                           "Median age of home (2021)" = "med_age_home2021",
                                                                                                                                                           # "Affordable rent units available" = "afford_avail_units",
-                                                                                                                                                          "Affordable housing shortage (2021)" = "housing_balance"),
+                                                                                                                                                          "Affordable housing shortage (2020)" = "housing_balance"),
                                                                                                                                    "Other topics" = list("Households with internet access (2021)" = "internet_hh_pct2021")), selected = "owner_occ_hh_pct2021"),
                                 shiny::p("Use this table to view data for any indicator by county. Data used in this dashboard can be downloaded as a CSV file."),
                                 out = 
@@ -136,7 +136,7 @@ ui <- navbarPage(
                              br(),
                              tableOutput("sum"),
                              br(),
-                             downloadButton("downloadDataSel", "Selected indicator"),
+                             #downloadButton("downloadDataSel", "Selected indicator"),
                              downloadButton("downloadDataAll", "All indicators")))),
         tabPanel("About this site",
                  sidebarLayout(
@@ -152,7 +152,11 @@ ui <- navbarPage(
                              h4("Methods"),
                              p("All data in this dashboard comes from the American Community Survey's 2021 5-year-estimates, with the exception of the Affordable Housing Shortage variable, which is from HUD’s Comprehensive Housing Affordability Strategy dataset (2019). All census data was accessed through the US Census Bureau API using the tidycensus package in R. All data processing and preparation was completed using the following R packages: dplyr, tigris, sf, stringr, tidyr. This dashboard was made entirely using the R-language in Posit's R-Shiny app interface, and visualizations were made using the R packages leaflet, plotly, ggplot2, and pander. Full documentation for this project can be found here: [insert HIP github link]"),
                              h4("Get in touch"),
-                             p("For questions about this dashboard, please contact Anna Duan, Housing Research Analyst, at annaduan@sas.upenn.edu and/or Amy Sechrist, Senior Policy Officer, at asechrist@phfa.org"),
-                             img(src='hip_logo.png', height = 140),
+                             p(HTML("For questions about this dashboard, please contact 
+        Anna Duan, Housing Research Analyst, at 
+        <a href='mailto:annaduan@sas.upenn.edu'>annaduan@sas.upenn.edu</a> 
+        and/or Amy Sechrist, Senior Policy Officer, at 
+        <a href='mailto:asechrist@phfa.org'>asechrist@phfa.org</a>")),
+        img(src='hip_logo.png', height = 140),
                              img(src='phfa_logo.png', height = 140)))))
 
