@@ -14,7 +14,7 @@ library(scales)
 
 #### Data processing ####  
 # original data
-dat <- st_read("PHFA_dash_data_11-20.geojson") %>%
+dat <- st_read("PHFA_dash_data_01-23.geojson") %>%
   dplyr::mutate(housing_balance = ifelse(housing_balance < 0, abs(housing_balance), 0))
 
 # spatial panel
@@ -39,61 +39,62 @@ rural <- panel.sf %>%
   st_as_sf()
 
 # state averages for variables
-state_avg <- st_read("state_avg_11-20.csv")
+state_avg <- st_read("state_avg_01-23.csv") %>%
+  dplyr::mutate(housing_balance = 267074)
 
 # variable aliases for display
 variable_aliases <- c(
-"owner_occ_hh_pct2021" = "Homeownership rate (2021)",
-"renter_occ_hh_pct2021" = "Rentership rate (2021)",
-"renter_vacant_pct2021" = "Vacant rental units (2021)",
-"med_age_home2021" = "Median age of home (2021)",
-"med_home_value2021" = "Median home value (2021)",
-"internet_hh_pct2021" = "Households with internet access (2021)",
-"rent_burdened_pct2021" = "Rent burdened households (2021)",
-"mortgage_burdened_pct2021" = "Mortgage burdened households (2021)",
-"med_gross_rent2021" = "Median gross rent (2021)",
-"housing_balance" = "Affordable housing shortage (2021)"
+"owner_occ_hh_pct2022" = "Homeownership rate (2022)",
+"renter_occ_hh_pct2022" = "Rentership rate (2022)",
+"renter_vacant_pct2022" = "Vacant rental units (2022)",
+"med_age_home2022" = "Median age of home (2022)",
+"med_home_value2022" = "Median home value (2022)",
+"internet_hh_pct2022" = "Households with internet access (2022)",
+"rent_burdened_pct2022" = "Rent burdened households (2022)",
+"mortgage_burdened_pct2022" = "Mortgage burdened households (2022)",
+"med_gross_rent2022" = "Median gross rent (2022)",
+"housing_balance" = "Affordable housing shortage (2022)"
 )
 
 # prefixes for legend labels 
 variable_prefix <- c(
-"owner_occ_hh_pct2021" = "",
-"renter_occ_hh_pct2021" = "",
-"renter_vacant_pct2021" = "",
-"med_age_home2021" = "",
-"med_home_value2021" = "$",
-"internet_hh_pct2021" = "",
-"rent_burdened_pct2021" = "",
-"mortgage_burdened_pct2021" = "",
-"med_gross_rent2021" = "$",
+"owner_occ_hh_pct2022" = "",
+"renter_occ_hh_pct2022" = "",
+"renter_vacant_pct2022" = "",
+"med_age_home2022" = "",
+"med_home_value2022" = "$",
+"internet_hh_pct2022" = "",
+"rent_burdened_pct2022" = "",
+"mortgage_burdened_pct2022" = "",
+"med_gross_rent2022" = "$",
 "housing_balance" = ""
 )
 
 # suffixes for legend labels
 variable_suffix <- c(
-  "owner_occ_hh_pct2021" = "%",
-  "renter_occ_hh_pct2021" = "%",
-  "renter_vacant_pct2021" = "%",
-  "med_age_home2021" = " years",
-  "med_home_value2021" = "",
-  "internet_hh_pct2021" = "%",
-  "rent_burdened_pct2021" = "%",
-  "mortgage_burdened_pct2021" = "%",
-  "med_gross_rent2021" = "",
+  "owner_occ_hh_pct2022" = "%",
+  "renter_occ_hh_pct2022" = "%",
+  "renter_vacant_pct2022" = "%",
+  "med_age_home2022" = " years",
+  "med_home_value2022" = "",
+  "internet_hh_pct2022" = "%",
+  "rent_burdened_pct2022" = "%",
+  "mortgage_burdened_pct2022" = "%",
+  "med_gross_rent2022" = "",
   "housing_balance" = " units"
 )
 
 # variable type
 variable_type <- c(
-  "owner_occ_hh_pct2021" = "percent",
-  "renter_occ_hh_pct2021" = "percent",
-  "renter_vacant_pct2021" = "percent",
-  "med_age_home2021" = "",
-  "med_home_value2021" = "currency",
-  "internet_hh_pct2021" = "percent",
-  "rent_burdened_pct2021" = "percent",
-  "mortgage_burdened_pct2021" = "percent",
-  "med_gross_rent2021" = "currency",
+  "owner_occ_hh_pct2022" = "percent",
+  "renter_occ_hh_pct2022" = "percent",
+  "renter_vacant_pct2022" = "percent",
+  "med_age_home2022" = "",
+  "med_home_value2022" = "currency",
+  "internet_hh_pct2022" = "percent",
+  "rent_burdened_pct2022" = "percent",
+  "mortgage_burdened_pct2022" = "percent",
+  "med_gross_rent2022" = "currency",
   "housing_balance" = ""
 )
 #### Server ####
@@ -162,16 +163,16 @@ ggplotly(barp) %>%
 ##### leaflet menu indicator information #####
   output$indicator_desc_text <- renderText({
   description <- c(
-    "owner_occ_hh_pct2021" = "Homeownership rate (%) is the percentage of households that own their homes. A higher rate indicates a greater proportion of homeowners in the area.",
-    "renter_occ_hh_pct2021" = "The rentership rate shows the share of households in a county that rent their homes. Younger households and households with limited incomes are more likely to rent than older households and households with higher incomes.",
-    "renter_vacant_pct2021" = "Vacant rental units (%) represents the percentage of rental units that are currently unoccupied. A higher percentage can suggest that there's a surplus of rental housing or potentially decreased demand.",
-    "med_age_home2021" = "Median age of home (years) indicates the midpoint age of homes in a specific area. Older median ages can suggest historical or older neighborhoods, while lower values might indicate newer developments.",
-    "med_home_value2021" = "Median home value ($) is the midpoint value of homes in the area. This can provide an insight into the overall affordability and property values of a region.",
-    "internet_hh_pct2021" = "Households with internet access (%) is the percentage of households that have access to the internet. This can provide insights into the area's technological infrastructure and development.",
-    "rent_burdened_pct2021" = "Rent-burdened households represents the share of renter households with incomes less than $35,000 that spend 30% or more of their income on rent. Low-income households that spend a high share of their income on housing costs have limited residual income to spend on other household expenses, much less save for emergencies. These households are more vulnerable to setbacks to their household finances and to more wide scale economic shocks.",
-    "mortgage_burdened_pct2021" = "Mortgage burdened households (%) indicates the low-income households spending 30% or more of their income on mortgage payments. Higher percentages may show potential financial strain for low-income homeowners.",
-    "med_gross_rent2021" = "Median gross rent conveys the midpoint amount that households pay in total for their contract rent, utilities, and fuel costs. Low-income households living in areas with higher median gross rent tend to have greater challenges with housing affordability.",
-    "housing_balance" = "Affordable housing shortage (units) refers to the difference between the demand for affordable housing and the supply available. A positive number indicates a shortage of affordable housing units.")
+    "owner_occ_hh_pct2022" = "Homeownership rate (%) is the percentage of households that own their homes. A higher rate indicates a greater proportion of homeowners in the area.",
+    "renter_occ_hh_pct2022" = "The rentership rate shows the share of households in a county that rent their homes. Younger households and households with limited incomes are more likely to rent than older households and households with higher incomes.",
+    "renter_vacant_pct2022" = "Vacant rental units (%) represents the percentage of rental units that are currently unoccupied. A higher percentage can suggest that there's a surplus of rental housing or potentially decreased demand.",
+    "med_age_home2022" = "Median age of home (years) indicates the midpoint age of homes in a specific area. Older median ages can suggest historical or older neighborhoods, while lower values might indicate newer developments.",
+    "med_home_value2022" = "Median home value ($) is the midpoint value of homes in the area. This can provide an insight into the overall affordability and property values of a region.",
+    "internet_hh_pct2022" = "Households with internet access (%) is the percentage of households that have access to the internet. This can provide insights into the area's technological infrastructure and development.",
+    "rent_burdened_pct2022" = "Rent-burdened households represents the share of renter households with incomes less than $35,000 that spend 30% or more of their income on rent. Low-income households that spend a high share of their income on housing costs have limited residual income to spend on other household expenses, much less save for emergencies. These households are more vulnerable to setbacks to their household finances and to more wide scale economic shocks.",
+    "mortgage_burdened_pct2022" = "Mortgage burdened households (%) indicates the low-income households spending 30% or more of their income on mortgage payments. Higher percentages may show potential financial strain for low-income homeowners.",
+    "med_gross_rent2022" = "Median gross rent conveys the midpoint amount that households pay in total for their contract rent, utilities, and fuel costs. Low-income households living in areas with higher median gross rent tend to have greater challenges with housing affordability.",
+    "housing_balance" = "Affordable housing shortage (units) refers to the difference between the demand for rental units affordable to extremely low-income households (income < $30,000) and the supply available. A positive number indicates a shortage of affordable housing units.")
     v <- input$variable
     desc <- description[v]
     return(desc)
@@ -226,7 +227,7 @@ ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
 
     v <- input$variable_tab
     alias <- variable_aliases[v]
-    return(paste(alias, "rankings, 2023", sep = " "))
+    return(paste(alias, "rankings", sep = " "))
   })
   
 

@@ -12,9 +12,9 @@ library(tigris)
 #### Pull data ####
 #### census panels
 census_api_key("d9ebfd04caa0138647fbacd94c657cdecbf705e9", install = TRUE, overwrite = TRUE)
-census_vars <- load_variables(year = 2021, dataset = "acs5")
+census_vars <- load_variables(year = 2022, dataset = "acs5")
 
-#### statewide avg - 2021 ####
+#### statewide avg - 2022 ####
 dat_PA <- get_acs(geography = "state", 
                   variables = c("owner_occ_hh" = "B25011_002", 
                                 "total_hh" = "B25011_001",
@@ -56,7 +56,7 @@ dat_PA <- get_acs(geography = "state",
                                 "renter_inc_10k_20k" = "B25074_011",
                                 "renter_inc_20k_35k" = "B25074_020"
                                 
-                  ), year = 2021, state = "PA", #20-35k 50%+
+                  ), year = 2022, state = "PA", #20-35k 50%+
                   geometry = FALSE, survey = "acs5", output = "wide") %>%
   
           # ownership rate
@@ -69,7 +69,7 @@ dat_PA <- get_acs(geography = "state",
          renter_vacant_pct = ifelse(renter_occ_hhE > 0, round(100*vacant_rental_unitsE/renter_occ_hhE), 0),
          
          # median home age
-         med_age_home = 2023-med_year_builtE,
+         med_age_home = 2024-med_year_builtE,
          
          # hh with internet %
          internet_hh_pct = ifelse(total_hhE > 0, round(100*internet_hhE/total_hhE), 0),
@@ -98,15 +98,15 @@ dat_PA <- get_acs(geography = "state",
          med_home_value = med_home_valueE) %>%
   dplyr::select(owner_occ_hh_pct, renter_occ_hh_pct, renter_vacant_pct, med_age_home, med_home_value, internet_hh_pct, rent_burdened_pct, mortgage_burdened_pct, med_gross_rent) 
 
-new_column_names <- paste0(names(dat_PA), 2021)
+new_column_names <- paste0(names(dat_PA), 2022)
 
 # Assign the modified column names back to the data frame
 names(dat_PA) <- new_column_names
 
 
 
-#### 2021 ####
-dat21 <- get_acs(geography = "county", 
+#### 2022 ####
+dat22 <- get_acs(geography = "county", 
                  variables = c("owner_occ_hh" = "B25011_002", 
                                "total_hh" = "B25011_001",
                                "renter_occ_hh" = "B25011_026",
@@ -147,7 +147,7 @@ dat21 <- get_acs(geography = "county",
                                "renter_inc_10k_20k" = "B25074_011",
                                "renter_inc_20k_35k" = "B25074_020"
                                
-                 ), year = 2021, state = "PA", #20-35k 50%+
+                 ), year = 2022, state = "PA", #20-35k 50%+
                  geometry = FALSE, survey = "acs5", output = "wide") %>%
   
   # ownership rate
@@ -160,7 +160,7 @@ dat21 <- get_acs(geography = "county",
          renter_vacant_pct = ifelse(renter_occ_hhE > 0, round(100*vacant_rental_unitsE/renter_occ_hhE), 0),
          
          # median home age
-         med_age_home = 2023-med_year_builtE,
+         med_age_home = 2024-med_year_builtE,
          
          # hh with internet %
          internet_hh_pct = ifelse(total_hhE > 0, round(100*internet_hhE/total_hhE), 0),
@@ -189,25 +189,45 @@ dat21 <- get_acs(geography = "county",
          med_home_value = med_home_valueE) %>%
   dplyr::select(county, owner_occ_hh_pct, renter_occ_hh_pct, renter_vacant_pct, med_age_home, med_home_value, internet_hh_pct, rent_burdened_pct, mortgage_burdened_pct, med_gross_rent) 
 
-new_column_names <- paste0(names(dat21), 2021)
+new_column_names <- paste0(names(dat22), 2022)
 
 # Assign the modified column names back to the data frame
-names(dat21) <- new_column_names
+names(dat22) <- new_column_names
 
-dat <- dat21  %>%
-  rename(county = county2021) 
+dat <- dat22  %>%
+  rename(county = county2022) 
 
 #### CHAS Data 
 chas <- st_read("/Users/annaduan/Desktop/GitHub/PHFA-Housing-Dash/data/PACounty_2015-2019.xlsx") %>%
   mutate(Geography = word(Geography, end = 1))
 names(chas) <- c("county", "renter_hh", "afford_avail_units", "housing_balance")
 
+
+
+
+#### correct PA housing balance
+tab8 <- read.csv("/Users/annaduan/Desktop/GitHub/PHFA-Housing-Dash/data/chas_pa_2016-2020/2016thru2020-040-csv/Table8.csv") %>%
+  dplyr::select(T8_est69, name) %>% #occupied by low-inc hh
+  filter(name == "Pennsylvania")
+
+tab14b <- read.csv("/Users/annaduan/Desktop/GitHub/PHFA-Housing-Dash/data/chas_pa_2016-2020/2016thru2020-040-csv/Table14B.csv") %>%
+  dplyr::select(T14B_est4, name) %>% #affordable and vacant for rent
+  filter(name == "Pennsylvania")
+
+tab15c <- read.csv("/Users/annaduan/Desktop/GitHub/PHFA-Housing-Dash/data/chas_pa_2016-2020/2016thru2020-040-csv/Table15C.csv") %>%
+  dplyr::select(T15C_est4, #affordable + occupied + below 30% RHUD30
+                T15C_est5, name) %>% #affordable and occupied by low-inc hh
+  filter(name == "Pennsylvania")
+
+housing_balance = tab14b$T14B_est4 + tab15c$T15C_est5 - tab8$T8_est69 - tab15c$T15C_est4
+
+
 chas_pa <- chas %>%
   mutate(weight = renter_hh/10000,
          afford_avail_units_weighted = round(afford_avail_units*weight),
          housing_balance_weighted = round(housing_balance*weight)) %>%
   summarize(afford_avail_units = sum(afford_avail_units_weighted)/sum(weight),
-            housing_balance = sum(housing_balance_weighted)/sum(weight)) %>%
+            housing_balance = -267074) %>%
   mutate(county = "statewide_avg",
          renter_hh = 434595)
 
@@ -239,53 +259,9 @@ panel.sf <- dat %>%
   left_join(dat, by = "county") %>%
   st_as_sf()
 
-st_write(panel.sf, "PHFA_dash_data_11-20.geojson", driver="GeoJSON")
+st_write(panel.sf, "PHFA_dash_data_01-23.geojson", driver="GeoJSON")
 
 
 state_avg = cbind(chas_pa, dat_PA)
 
-st_write(state_avg, "state_avg_11-20.csv", driver = "CSV")
-#### Leaflet test run ####
-dat <- st_read("/Users/annaduan/Documents/GitHub/PHFA\ dashboard/app.sept29/PHFA_dash_data_October3.geojson") %>%
-  st_as_sf()
-
-
-pal <- colorFactor("YlGnBu", dat$owner_occ_hh_pct_2021)
-
-
-labs_dat <- sprintf(
-  "<strong>%s</strong><br/>
-  Home Ownership Rate $%s<sup></sup>",
-  dat$county, dat$owner_occ_hh_pct_2021
-) %>% lapply(htmltools::HTML)
-
-# 
-# title <- tags$div(
-#   HTML("<strong>2021 ACS Estimates</strong><br/>
-#         Hover to see individual counties"))  
-
-
-leaflet(dat) %>%
-  addPolygons(fillColor = ~pal(owner_occ_hh_pct_2021),
-              weight = 2,
-              opacity = 1,
-              color = "white",
-              dashArray = "3",
-              fillOpacity = 0.7,
-              highlightOptions = highlightOptions(
-                weight = 5,
-                color = "#666",
-                dashArray = "",
-                fillOpacity = 0.7,
-                bringToFront = TRUE)
-              ,
-               label = labs_dat,
-               labelOptions = labelOptions(
-                 style = list("font-weight" = "normal", padding = "3px 8px"),
-                 textsize = "15px",
-                 direction = "auto")
-  )%>%
-  addProviderTiles(providers$CartoDB.Positron) %>%
-  # addControl(title, position = "topright") %>%
-  addLegend(pal = pal, values = ~owner_occ_hh_pct_2021, opacity = 0.7, title = "Home Ownership Rate<br/>by County (%)",
-            position = "bottomright")
+st_write(state_avg, "state_avg_01-23.csv", driver = "CSV")
