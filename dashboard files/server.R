@@ -172,7 +172,7 @@ ggplotly(barp) %>%
     "rent_burdened_pct2022" = "Rent-burdened households represents the share of renter households with incomes less than $35,000 that spend 30% or more of their income on rent. Low-income households that spend a high share of their income on housing costs have limited residual income to spend on other household expenses, much less save for emergencies. These households are more vulnerable to setbacks to their household finances and to more wide scale economic shocks.",
     "mortgage_burdened_pct2022" = "Mortgage burdened households (%) indicates the low-income households spending 30% or more of their income on mortgage payments. Higher percentages may show potential financial strain for low-income homeowners.",
     "med_gross_rent2022" = "Median gross rent conveys the midpoint amount that households pay in total for their contract rent, utilities, and fuel costs. Low-income households living in areas with higher median gross rent tend to have greater challenges with housing affordability.",
-    "housing_balance" = "Affordable housing shortage (units) refers to the difference between the demand for rental units affordable to extremely low-income households (income < $30,000) and the supply available. A positive number indicates a shortage of affordable housing units.")
+    "housing_balance" = "Affordable housing shortage (units) refers to the difference between the demand for rental units affordable to extremely low-income households (income < 30% of area median income) and the supply available. A positive number indicates a shortage of affordable housing units.")
     v <- input$variable
     desc <- description[v]
     return(desc)
