@@ -1,5 +1,6 @@
 # Pennsylvania Housing Finance Agency Dashboard
 
+![Dashboard landing page](https://github.com/housinginitiative/PHFA-Housing-Dash/blob/80ccdf7ead5fe87b68a48cea421b6050f63509e9/dashboard%20files/www/dashboard%20screenshot.png)
 
 ## Overview
 
