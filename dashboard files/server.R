@@ -353,11 +353,12 @@ ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
                 labFormat = function(type, cuts, p) {
                   labels <- vector("character", length(cuts) - 1)
                   for (i in 1:(length(cuts) - 1)) {
-                    # Apply the prefix and suffix to each bound + remove decimal points
-                    lower_bound <- paste0(prefix, sprintf("%.0f", cuts[i]), suffix)
-                    upper_bound <- paste0(prefix, sprintf("%.0f", cuts[i + 1]), suffix)
+                    # Apply the prefix and suffix to each bound + format numbers with commas
+                    lower_bound <- paste0(prefix, formatC(cuts[i], format = "f", big.mark = ",", digits = 0), suffix)
+                    upper_bound <- paste0(prefix, formatC(cuts[i + 1], format = "f", big.mark = ",", digits = 0), suffix)
                     # Construct the label for each bin
-                      labels[i] <- paste(lower_bound, "-", upper_bound)}
+                    labels[i] <- paste(lower_bound, "-", upper_bound)
+                  }
                   return(labels)},
                 values = quantile(dat.sf()$variable, probs = c(0, 0.2, 0.4, 0.6, 0.8, 1), na.rm = TRUE),
                 position = "bottomright") %>%
