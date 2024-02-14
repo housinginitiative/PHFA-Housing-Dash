@@ -87,9 +87,9 @@ Based in the University of Pennsylvania's Weitzman School of Design, the Housing
 
 For questions about this dashboard, please contact:
 
-\- Anna Duan, Housing Research Analyst, at [annaduan\@sas.upenn.edu](mailto:annaduan@sas.upenn.edu){.email}
+**Anna Duan**, Housing Research Analyst, at [annaduan\@sas.upenn.edu](mailto:annaduan@sas.upenn.edu)
 
-\- Amy Sechrist, Senior Policy Officer, at [asechrist\@phfa.org](mailto:asechrist@phfa.org){.email}
+**Amy Sechrist**, Senior Policy Officer, at [asechrist\@phfa.org](mailto:asechrist@phfa.org)
 
 
 ### Last Update  
