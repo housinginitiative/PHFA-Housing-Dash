@@ -357,13 +357,10 @@ ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
                     lower_bound <- paste0(prefix, sprintf("%.0f", cuts[i]), suffix)
                     upper_bound <- paste0(prefix, sprintf("%.0f", cuts[i + 1]), suffix)
                     # Construct the label for each bin
-                      labels[i] <- paste(lower_bound, "-", upper_bound)
-                  }
-                  return(labels)
-                },
+                      labels[i] <- paste(lower_bound, "-", upper_bound)}
+                  return(labels)},
                 values = quantile(dat.sf()$variable, probs = c(0, 0.2, 0.4, 0.6, 0.8, 1), na.rm = TRUE),
-                position = "bottomright"
-      ) %>%
+                position = "bottomright") %>%
       addLabelOnlyMarkers(data = dat.sf(), ~dat.sf()$lon, ~dat.sf()$lat, 
                           label = ~as.character(dat.sf()$county),
                           labelOptions = labelOptions(
@@ -375,7 +372,7 @@ ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
                               "font-family" = "sans-serif",
                               "font-size" = "14px",
                               "text-shadow" = "-0.25px -0.25px 0 #607d8b, 0.25px -0.25px 0 #607d8b, -0.25px 0.25px 0 #607d8b, 0.25px 0.25px 0 #607d8b" # Dark gray outline
-                            )),
+                              )),
                           group = "county names") %>%
       addPolygons(data = rural,
         color = "orchid",
@@ -389,7 +386,8 @@ ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
       addLayersControl(position = "bottomright",
         overlayGroups = c("rural counties", "county names"), 
         options = layersControlOptions(collapsed = F))%>%
-      groupOptions("county names", zoomLevels = 8:100)
+      groupOptions("county names", zoomLevels = 8:100) %>%
+      groupOptions("rural counties", zoomLevels = FALSE)
   })
 
   
