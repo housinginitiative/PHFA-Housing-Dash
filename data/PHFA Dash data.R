@@ -239,9 +239,19 @@ rural <- st_read("/Users/annaduan/Desktop/GitHub/PHFA-Housing-Dash/data/2020_UA_
   rename(county = Field4)
 
 #### County shapefiles
-counties.sf <- counties(state = "PA") %>%
+pa_counties <- counties(state = "PA") %>%
   dplyr::select("county" = "NAME") %>%
   st_transform("WGS84")
+
+erie <- pa_counties %>%
+  filter(county == "Erie") %>%
+  erase_water(area_threshold = 0.999)
+
+noterie <- pa_counties %>%
+  filter(county != "Erie")
+
+counties.sf <- rbind(erie, noterie) %>%
+  st_cast("POLYGON")
 
 #### Write panel #### 
 dat <- dat %>%
@@ -259,9 +269,16 @@ panel.sf <- dat %>%
   left_join(dat, by = "county") %>%
   st_as_sf()
 
-st_write(panel.sf, "PHFA_dash_data_01-23.geojson", driver="GeoJSON")
+st_write(panel.sf, "PHFA_dash_data_Feb.23.geojson", driver="GeoJSON")
 
 
 state_avg = cbind(chas_pa, dat_PA)
 
 st_write(state_avg, "state_avg_01-23.csv", driver = "CSV")
+
+
+
+#####
+leaflet(counties.sf) %>%
+  addProviderTiles("CartoDB.Positron") %>%
+  addPolygons(fillColor = "white", color = "black", weight = 1, opacity = 1, fillOpacity = 0.7)

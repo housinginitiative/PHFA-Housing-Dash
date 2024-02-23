@@ -10,11 +10,13 @@ library(mapview)
 library(plotly)
 library(DT)
 library(scales)
+library(tigris)
+conflicts_prefer(dplyr::filter)
 
 
 #### Data processing ####  
 # original data
-dat <- st_read("PHFA_dash_data_01-23.geojson") %>%
+dat <- st_read("PHFA_dash_data_Feb.23.geojson") %>%
   dplyr::mutate(housing_balance = ifelse(housing_balance < 0, abs(housing_balance), 0))
 
 # spatial panel
@@ -117,11 +119,13 @@ server <- function(input, output, session) {
                     variable_scatter_x = input$variable_scatter_x, variable_scatter_y = input$variable_scatter_y, 
                     variable_tab = input$variable_tab, rural)})
   
+  palette_blue <- c("#AFE2F8", "#84B4D0", "#5887A8", "#2D597F", "#012B57")
+  
   #### reactive palette ####
   mapPalette <- reactive({
     leaflet::colorQuantile(
       na.color = "gray",
-      palette = "Blues",
+      palette = palette_blue,
       domain = NULL,
       n = 5, 
       reverse = FALSE
@@ -323,7 +327,8 @@ ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
   
     #### Leaflet map ####
     leaflet(options = leafletOptions(minZoom = 7)) %>%
-      addProviderTiles(providers$CartoDB.Positron) %>%
+      addProviderTiles(providers$CartoDB.Positron, group = "Light Theme") %>%
+      addProviderTiles(providers$CartoDB.DarkMatter, group = "Dark Theme") %>%
       setView( lng = -77.83069
                , lat = 40.94503
                , zoom = 8 ) %>%
@@ -339,9 +344,9 @@ ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
                   dashArray = "3",
                   highlightOptions = highlightOptions(
                     weight = 1,
-                    color = "#666",
+                    color = "white",
                     dashArray = "",
-                    fillOpacity = 0.5,
+                    fillOpacity = 0.3,
                     bringToFront = TRUE),
                   label = labs_dat(),
                   group = "counties") %>%
@@ -372,7 +377,7 @@ ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
                               "color" = "white",
                               "font-family" = "sans-serif",
                               "font-size" = "14px",
-                              "text-shadow" = "-0.25px -0.25px 0 #607d8b, 0.25px -0.25px 0 #607d8b, -0.25px 0.25px 0 #607d8b, 0.25px 0.25px 0 #607d8b" # Dark gray outline
+                              "text-shadow" = "-0.3px -0.3px 0 #607d8b, 0.3px -0.25px 0 #607d8b, -0.3px 0.3px 0 #607d8b, 0.3px 0.3px 0 #607d8b" # Dark gray outline
                               )),
                           group = "county names") %>%
       addPolygons(data = rural,
@@ -387,6 +392,7 @@ ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
       addLayersControl(position = "bottomright",
         overlayGroups = c("rural counties", "county names"), 
         options = layersControlOptions(collapsed = F))%>%
+      addLayersControl(baseGroups = c("Light Theme", "Dark Theme"), options = layersControlOptions(collapsed = FALSE)) %>%
       groupOptions("county names", zoomLevels = 8:100) %>%
       groupOptions("rural counties", zoomLevels = FALSE)
   })
