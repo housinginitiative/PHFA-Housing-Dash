@@ -119,7 +119,7 @@ server <- function(input, output, session) {
                     variable_scatter_x = input$variable_scatter_x, variable_scatter_y = input$variable_scatter_y, 
                     variable_tab = input$variable_tab, rural)})
   
-  palette_blue <- c("#AFE2F8", "#84B4D0", "#5887A8", "#2D597F", "#012B57")
+  palette_blue <- c("#9BD0E7", "#75A3BB", "#4E7690", "#284864", "#011B38")
   
   #### reactive palette ####
   mapPalette <- reactive({
@@ -149,15 +149,15 @@ server <- function(input, output, session) {
   
 barp <- ggplot(data = df, aes(x = reorder(county, order_id), y = variable_bar, fill = variable_bar)) +
       geom_bar(color = "transparent", stat = "identity", aes(fill = as.factor(rural))) +
-  scale_fill_manual(values = c("#4e72aa", "#94bcda")) +
-      labs(title = paste(alias, "by PA county", sep = " "), caption = "Duan, Anna. Pennsylvania Affordable Housing Dashboard, Housing Initiative at Penn, Oct. 2023, annaduan09.shinyapps.io/PHFAdashOct3/. ", fill = alias, color = "Rural County", y = alias, x = "Urban Counties                                          Rural Counties") +
+  scale_fill_manual(values = c("#011B38", "#9BD0E7")) +
+      labs(title = paste(alias, "by PA county", sep = " "), caption = "Duan, Anna. Pennsylvania Affordable Housing Dashboard, Housing Initiative at Penn, Feb. 2024, https://housinginitiative.shinyapps.io/PHFA_Housing_Dashboard/. ", fill = alias, color = "Rural County", y = alias, x = "Urban Counties                                          Rural Counties") +
       theme_minimal() +
       theme(legend.position = "none") +
       coord_flip() 
 
 ggplotly(barp) %>%
   plotly::layout(margin = list(l = 50, r = 50, b = 100, t = 50),
-         annotations = list(x = 0.5, y = -0.15, text = "Source: Duan, Anna. Pennsylvania Affordable Housing Dashboard, Housing Initiative at Penn, Oct. 2023, annaduan09.shinyapps.io/PHFAdashOct3/. ",
+         annotations = list(x = 0.5, y = -0.15, text = "Source: Duan, Anna. Pennsylvania Affordable Housing Dashboard, Housing Initiative at Penn, Feb. 2024, https://housinginitiative.shinyapps.io/PHFA_Housing_Dashboard/. ",
                             xref='paper', yref='paper', showarrow = F, 
                             xanchor='center', yanchor='bottom', xshift=0, yshift=0,
                             font = list(size = 12, color = "gray")))
@@ -200,14 +200,14 @@ scatterp <- ggplot(df, aes(x = variable_scatter_x, y = variable_scatter_y)) +
   geom_point(stat = "identity", 
              aes(color = rural, text = hover_text), 
              size = 2, alpha = 0.8) +
-  scale_color_manual(values = c("#4e72aa", "#94bcda"), name = "Rural") +
+  scale_color_manual(values = c("#011B38", "#9BD0E7"), name = "Rural") +
   labs(title = paste(alias_x, "as a function of", alias_y, sep = " "),
        x = alias_x, y = alias_y) + theme_minimal()
 
 ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
          hoverinfo = "text") %>%
   plotly::layout(margin = list(l = 50, r = 50, b = 100, t = 50),
-                 annotations = list(x = 0.5, y = -0.2, text = "Source: Duan, Anna. Pennsylvania Affordable Housing Dashboard, Housing Initiative at Penn, Jan. 2024, https://housinginitiative.shinyapps.io/PHFA_Housing_Dashboard/. ",
+                 annotations = list(x = 0.5, y = -0.2, text = "Source: Duan, Anna. Pennsylvania Affordable Housing Dashboard, Housing Initiative at Penn, Feb. 2024, https://housinginitiative.shinyapps.io/PHFA_Housing_Dashboard/. ",
                                     xref='paper', yref='paper', showarrow = F,
                                     xanchor='center', yanchor='bottom', xshift=0, yshift=0,
                                     font = list(size = 12, color = "gray")))})
