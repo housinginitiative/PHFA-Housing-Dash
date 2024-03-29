@@ -324,7 +324,7 @@ ui <- navbarPage(
                p(
                  "The",
                  a(href = "https://www.phfa.org/", "Pennsylvania Housing Finance Agency"),
-                 " works to provide affordable homeownership and rental apartment options for older adults, low- and moderate-income families, and people with special housing needs. Through its carefully managed mortgage programs and investments in multifamily housing developments, as well as funding provided for community development projects, PHFA also promotes economic development across the Commonwealthstate."
+                 " works to provide affordable homeownership and rental apartment options for older adults, low- and moderate-income families, and people with special housing needs. Through its carefully managed mortgage programs and investments in multifamily housing developments, as well as funding provided for community development projects, PHFA also promotes economic development across the Commonwealth."
                ),
                h4("About Housing Initiative at Penn"),
                p(
@@ -336,7 +336,7 @@ ui <- navbarPage(
                p(
                  "All data in this dashboard comes from the",
                  a(href = "https://www.census.gov/programs-surveys/acs/news/data-releases.2022.html#list-tab-1133175109", "American Community Survey's"),
-                 " 2022 5-year-estimates, with the exception of the Affordable Housing Shortage variable, which is from HUD’s Comprehensive Housing Affordability Strategy dataset (2019). All census data was accessed through the US Census Bureau API using the tidycensus package in R. All data processing and preparation was completed using the following R packages: dplyr, tigris, sf, stringr, tidyr. This dashboard was made entirely using the R-language in Posit's R-Shiny app interface, and visualizations were made using the R packages leaflet, plotly, ggplot2, and pander. Full documentation for this project can be found here:",
+                 " 2022 5-year-estimates, with the exception of the Affordable Housing Shortage variable, which is from HUD’s Comprehensive Housing Affordability Strategy dataset (2020). All census data was accessed through the US Census Bureau API using the tidycensus package in R. All data processing and preparation was completed using the following R packages: dplyr, tigris, sf, stringr, tidyr. This dashboard was made entirely using the R-language in Posit's Shiny app interface, and visualizations were made using the R packages leaflet, plotly, ggplot2, and pander. Full documentation for this project can be found here:",
                  a(href = 'https://github.com/housinginitiative/PHFA-Housing-Dash', 'github repository')
                ),
                h4("Get in touch"),
