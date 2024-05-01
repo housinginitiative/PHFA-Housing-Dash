@@ -31,10 +31,10 @@ The dashboard utilizes the American Community Survey's 2022 5-year estimates and
     -   **Description:** The percentage of households that have access to the internet. This can provide insights into the area's technological infrastructure and development.
     -   **Source:** 2022 American Community Survey 5-Year Estimates, U.S. Census Bureau
 -   **Rent-burdened households (%) 2022**
-    -   **Description:** The share of renter households with incomes less than \$35,000 that spend 30% or more of their income on rent. These households are more vulnerable to financial setbacks and economic shocks.
+    -   **Description:** The percentage of extremely low-income households spending 30% or more of their income on rent. Extremely low-income households are those with annual household incomes of $35,000 or less. This does not include households who do not pay rent.
     -   **Source:** 2022 American Community Survey 5-Year Estimates, U.S. Census Bureau
 -   **Mortgage burdened households (%) 2022**
-    -   **Description:** Low-income households spending 30% or more of their income on mortgage payments. Higher percentages may show potential financial strain for low-income homeowners.
+    -   **Description:** The percentage of extremely low-income households spending 30% or more of their incomes on mortgage payments. Extremely low-income households are those with annual household incomes of $35,000 or less. This does not include households who have finished paying their mortgage.
     -   **Source:** 2022 American Community Survey 5-Year Estimates, U.S. Census Bureau
 -   **Median gross rent (\$) 2022**
     -   **Description:** The midpoint amount that households pay in total for their contract rent, utilities, and fuel costs. Higher median gross rent can indicate greater challenges with housing affordability for low-income households.
