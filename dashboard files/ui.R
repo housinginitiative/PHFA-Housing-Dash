@@ -7,10 +7,9 @@ library(shiny)
 library(shinythemes)
 library(bslib)
 library(leaflet)
-library(shinyWidgets)
 library(plotly)
-
 conflicts_prefer(shiny::p)
+
 sidebarPanel2 <-
   function (..., out = NULL, width = 4)
     #for putting logo outside of sidebarpanel
