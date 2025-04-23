@@ -196,14 +196,73 @@ names(dat23) <- new_column_names
 
 dat <- dat23  %>%
   rename(county = county2023) 
-                                                                                                                    ##### EDIT HERE ######
-#### CHAS Data 
+                                                                                                                    
+#### CHAS Data                           
+
+# set HUD API key from https://www.huduser.gov/portal/dataset/chas-api.html
+key <- "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI2IiwianRpIjoiM2ZhZTQ4ZjEzMGI3YzRiN2ExNTFkYTViNjAxYmU2ZjM2YjU4YTQ4NTIyNTliN2Y4YjlmNTVhMWViZTMxZWEzYzUyMTEzMGQwODczMzJjMjMiLCJpYXQiOjE3NDU0Mjc1NjguMjI5Nzk0LCJuYmYiOjE3NDU0Mjc1NjguMjI5Nzk3LCJleHAiOjIwNjA5NjAzNjguMjI2MTM2LCJzdWIiOiI5NjMyOCIsInNjb3BlcyI6W119.fIf2GtyQkL7FqOo-Wtfs3k5f7U8GifLt4Bg7EaOyxUmuYduzkUqL706h_eRC-obGwRGRX0wL0nBCwzRNfBYnKw"
+
+pull_hud <- function(url, geo_type, entity = NULL) {
+  
+  response <- httr::GET(url,
+                        query = list(type = geo_type,
+                                     stateId = 42,
+                                     entityId = entity),
+                        add_headers(Authorization = paste("Bearer", key)))
+  
+  # If no input errors, retrieve requested data. Otherwise, throw error
+  if(!httr::http_error(response)) {
+    return(httr::content(response))
+  } else {
+    stop("Query has missing or invalid inputs")
+  }
+  
+}
+
+# Pull county IDs for full county dataset request
+county_ids <- pull_hud("https://www.huduser.gov/hudapi/public/chas/listCounties/42", 2) %>%
+  unlist() %>%
+  matrix(ncol = 6, byrow = TRUE) %>%
+  as.data.frame() %>%
+  rename(id = 2, county = 3) %>%
+  mutate(id = as.numeric(id)) %>%
+  select(id, county)
+
+# Pull full county dataset into new object chas
+for(i in 1:nrow(county_ids)) {
+  county_data <- pull_hud(url = "https://www.huduser.gov/hudapi/public/chas", geo_type = 3, entity = county_ids$id[i]) %>%
+    unlist() %>%
+    matrix(nrow = 1, dimnames = list("", names(.))) %>%
+    as.data.frame() %>%
+    mutate(geoname = gsub(" County, Pennsylvania", "", geoname)) %>%
+    select(-2)
+  if(!exists("chas")) {
+    chas <- county_data
+  } else {
+    chas <- rbind(chas, county_data)
+  }
+}
+  
+##### RESUME EDIT HERE ######
+
+# Subset chas to relevant data
+chas_subset <- chas %>%
+  rename(eli_renter_hh = A2,
+         vli_renter_hh = A5,
+         li_renter_hh = A8,
+         unaffordable_eli_renter_hh = I1) %>%
+  select(eli_renter_hh,
+         vli_renter_hh,
+         li_renter_hh,
+         unaffordable_eli_renter_hh) %>% 
+  mutate(across(everything(), ~ as.numeric(.))) %>%
+  mutate(affordable_eli_renter_hh = eli_renter_hh - unaffordable_eli_renter_hh, .before = unaffordable_eli_renter_hh)
+  #### NEED VACANT RENTAL UNIT TOTALS
+  ### NEED TO COMPUTE HOUSING BALANCE
+  
 chas <- st_read("/Users/jstaro/Documents/GitHub/PHFA-Housing-Dash/data/PACounty_2015-2019.xlsx") %>%
   mutate(Geography = word(Geography, end = 1))
 names(chas) <- c("county", "renter_hh", "afford_avail_units", "housing_balance")
-
-
-
 
 #### correct PA housing balance
 tab8 <- read.csv("/Users/jstaro/Documents/GitHub/PHFA-Housing-Dash/data/chas_pa_2016-2020/2016thru2020-040-csv/Table8.csv") %>%
@@ -221,15 +280,16 @@ tab15c <- read.csv("/Users/jstaro/Documents/GitHub/PHFA-Housing-Dash/data/chas_p
 
 housing_balance = tab14b$T14B_est4 + tab15c$T15C_est5 - tab8$T8_est69 - tab15c$T15C_est4
 
-
 chas_pa <- chas %>%
   mutate(weight = renter_hh / 10000,
-         afford_avail_units_weighted = round(afford_avail_units*weight),
+         afford_avail_units_weighted = round(afford_avail_units * weight),
          housing_balance_weighted = round(housing_balance * weight)) %>%
   summarize(afford_avail_units = sum(afford_avail_units_weighted) / sum(weight),
             housing_balance = -267074) %>%
   mutate(county = "statewide_avg",
          renter_hh = 434595)
+
+#### STOP HERE ####
 
 #### Census rural-urban by county 
 rural <- st_read("/Users/jstaro/Documents/GitHub/PHFA-Housing-Dash/data/2020_UA_COUNTY.xlsx") %>% 
