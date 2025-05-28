@@ -256,7 +256,8 @@ noterie <- pa_counties %>%
   filter(county != "Erie")
 
 counties.sf <- rbind(erie, noterie) %>%
-  st_cast("POLYGON")
+  st_cast("POLYGON") %>%
+  distinct(county)
 
 #### Write panel #### 
 dat <- dat %>%
