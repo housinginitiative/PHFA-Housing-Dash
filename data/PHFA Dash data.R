@@ -195,40 +195,51 @@ names(dat23) <- new_column_names
 dat <- dat23  %>%
   rename(county = county2023) 
                                                                                                                     
-#### CHAS Data                           
-chas <- st_read("/Users/jstaro/Documents/GitHub/PHFA-Housing-Dash/data/PACounty_2015-2019.xlsx") %>%
-  mutate(Geography = word(Geography, end = 1))
-names(chas) <- c("county", "renter_hh", "afford_avail_units", "housing_balance")
+#### CHAS Data   
+tab1 <- read.csv("/Users/jstaro/Documents/GitHub/PHFA-Housing-Dash/data/chas_pa_2017-2021/2017thru2021-050-csv/Table1.csv") %>%
+  filter(st == 42) %>%
+  dplyr::select(name, T1_est75) %>% # occupied by renter hh
+  rename(renter_hh = T1_est75)
 
-#### correct PA housing balance
 tab8 <- read.csv("/Users/jstaro/Documents/GitHub/PHFA-Housing-Dash/data/chas_pa_2017-2021/2017thru2021-050-csv/Table8.csv") %>%
-  dplyr::select(T8_est69, name) %>% #occupied by low-inc hh
-  filter(name == "Pennsylvania")
+  filter(st == 42) %>%
+  dplyr::select(T8_est69, name) %>% # occupied by low-inc hh
+  rename(renter_hh_low_inc = T8_est69)
 
 tab14b <- read.csv("/Users/jstaro/Documents/GitHub/PHFA-Housing-Dash/data/chas_pa_2017-2021/2017thru2021-050-csv/Table14B.csv") %>%
-  dplyr::select(T14B_est4, name) %>% #affordable and vacant for rent
-  filter(name == "Pennsylvania")
+  filter(st == 42) %>%
+  dplyr::select(T14B_est4, name) %>% # affordable and vacant for rent
+  rename(afford_avail_units = T14B_est4)
 
 tab15c <- read.csv("/Users/jstaro/Documents/GitHub/PHFA-Housing-Dash/data/chas_pa_2017-2021/2017thru2021-050-csv/Table15C.csv") %>%
+  filter(st == 42) %>%
   dplyr::select(T15C_est4, #affordable + occupied + below 30% RHUD30
                 T15C_est5, name) %>% #affordable and occupied by low-inc hh
-  filter(name == "Pennsylvania")
+  rename(afford_occ_no_burden = T15C_est4,
+         afford_occ_low_inc = T15C_est5)
 
-housing_balance = tab14b$T14B_est4 + tab15c$T15C_est5 - tab8$T8_est69 - tab15c$T15C_est4
+chas <- left_join(tab1,
+                  tab8,
+                  by = "name") %>%
+  left_join(tab14b, by = "name") %>%
+  left_join(tab15c, by = "name") %>%
+  mutate(housing_balance = afford_avail_units + afford_occ_low_inc - renter_hh_low_inc - afford_occ_no_burden) %>%
+  rename(county = name) %>%
+  mutate(county = gsub(" .*", "", county))
 
 chas_pa <- chas %>%
-  mutate(weight = renter_hh / 10000,
+  mutate(weight = renter_hh_low_inc / 10000,                                    
          afford_avail_units_weighted = round(afford_avail_units * weight),
          housing_balance_weighted = round(housing_balance * weight)) %>%
   summarize(afford_avail_units = sum(afford_avail_units_weighted) / sum(weight),
-            housing_balance = -267074) %>%
-  mutate(county = "statewide_avg",
-         renter_hh = 434595)
+            housing_balance = sum(housing_balance), ####################### EDIT
+            county = "statewide_avg",
+            renter_hh = sum(renter_hh_low_inc))
 
 #### Census rural-urban by county 
 rural <- st_read("/Users/jstaro/Documents/GitHub/PHFA-Housing-Dash/data/2020_UA_COUNTY.xlsx") %>% 
   dplyr::filter(Field1 == "42") %>%
-  mutate(rural = ifelse(as.numeric(Field22)/as.numeric(Field5) > 0.5, 1, 0)) %>%
+  mutate(rural = ifelse(as.numeric(Field22) / as.numeric(Field5) > 0.5, 1, 0)) %>%
   dplyr::select(Field4, rural) %>%
   rename(county = Field4)
 
@@ -238,8 +249,8 @@ pa_counties <- counties(state = "PA") %>%
   st_transform("WGS84")
 
 erie <- pa_counties %>%
-  filter(county == "Erie") %>%
-  erase_water(area_threshold = 0.999)
+  filter(county == "Erie") # %>%
+  # erase_water(area_threshold = 0.999) #################### EDIT 
 
 noterie <- pa_counties %>%
   filter(county != "Erie")
@@ -263,12 +274,11 @@ panel.sf <- dat %>%
   left_join(dat, by = "county") %>%
   st_as_sf()
 
-st_write(panel.sf, "PHFA_dash_data_May.24.geojson", driver="GeoJSON")
-
+st_write(panel.sf, "PHFA_dash_data_May.25.geojson", driver = "GeoJSON")
 
 state_avg = cbind(chas_pa, dat_PA)
 
-st_write(state_avg, "state_avg_01-23.csv", driver = "CSV")
+st_write(state_avg, "state_avg_05-25.csv", driver = "CSV")
 
 
 
@@ -276,3 +286,4 @@ st_write(state_avg, "state_avg_01-23.csv", driver = "CSV")
 leaflet(counties.sf) %>%
   addProviderTiles("CartoDB.Positron") %>%
   addPolygons(fillColor = "white", color = "black", weight = 1, opacity = 1, fillOpacity = 0.7)
+
