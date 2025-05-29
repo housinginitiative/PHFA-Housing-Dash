@@ -49,6 +49,9 @@ ui <- navbarPage(
         choices = list(
           "Homeowners" = list(
             "Homeownership rate (2023)" = "owner_occ_hh_pct2023",
+            "White homeownership rate (2023)" = "white_own_occ_hh_pct2023",
+            "Black homeownership rate (2023)" = "black_own_occ_hh_pct2023",
+            "Hispanic or Latinx homeownership rate (2023)" = "hisp_lat_own_occ_hh_pct2023",
             "Median home value (2023)" = "med_home_value2023",
             "Mortgage burdened households (2023)" = "mortgage_burdened_pct2023"
           ),
@@ -87,6 +90,9 @@ ui <- navbarPage(
           choices = list(
             "Homeowners" = list(
               "Homeownership rate (2023)" = "owner_occ_hh_pct2023",
+              "White homeownership rate (2023)" = "white_own_occ_hh_pct2023",
+              "Black homeownership rate (2023)" = "black_own_occ_hh_pct2023",
+              "Hispanic or Latinx homeownership rate (2023)" = "hisp_lat_own_occ_hh_pct2023",
               "Median home value (2023)" = "med_home_value2023",
               "Mortgage burdened households (2023)" = "mortgage_burdened_pct2023"
             ),
@@ -206,6 +212,9 @@ ui <- navbarPage(
                  choices = list(
                    "Homeowners" = list(
                      "Homeownership rate (2023)" = "owner_occ_hh_pct2023",
+                     "White homeownership rate (2023)" = "white_own_occ_hh_pct2023",
+                     "Black homeownership rate (2023)" = "black_own_occ_hh_pct2023",
+                     "Hispanic or Latinx homeownership rate (2023)" = "hisp_lat_own_occ_hh_pct2023",
                      "Median home value (2023)" = "med_home_value2023",
                      "Mortgage burdened households (2023)" = "mortgage_burdened_pct2023"
                    ),
@@ -230,6 +239,9 @@ ui <- navbarPage(
                  choices = list(
                    "Homeowners" = list(
                      "Homeownership rate (2023)" = "owner_occ_hh_pct2023",
+                     "White homeownership rate (2023)" = "white_own_occ_hh_pct2023",
+                     "Black homeownership rate (2023)" = "black_own_occ_hh_pct2023",
+                     "Hispanic or Latinx homeownership rate (2023)" = "hisp_lat_own_occ_hh_pct2023",
                      "Median home value (2023)" = "med_home_value2023",
                      "Mortgage burdened households (2023)" = "mortgage_burdened_pct2023"
                    ),
@@ -272,6 +284,9 @@ ui <- navbarPage(
                  choices = list(
                    "Homeowners" = list(
                      "Homeownership rate (2023)" = "owner_occ_hh_pct2023",
+                     "White homeownership rate (2023)" = "white_own_occ_hh_pct2023",
+                     "Black homeownership rate (2023)" = "black_own_occ_hh_pct2023",
+                     "Hispanic or Latinx homeownership rate (2023)" = "hisp_lat_own_occ_hh_pct2023",
                      "Median home value (2023)" = "med_home_value2023",
                      "Mortgage burdened households (2023)" = "mortgage_burdened_pct2023"
                    ),

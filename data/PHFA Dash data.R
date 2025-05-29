@@ -16,8 +16,14 @@ census_vars <- load_variables(year = 2023, dataset = "acs5")
 
 #### statewide avg - 2023 ####
 dat_PA <- get_acs(geography = "state", 
-                  variables = c("owner_occ_hh" = "B25011_002", 
-                                "total_hh" = "B25011_001",
+                  variables = c("total_hh" = "B25011_001",
+                                "owner_occ_hh" = "B25011_002", 
+                                "total_white_hh" = "B25003A_001",
+                                "white_own_occ_hh" = "B25003A_002",
+                                "total_black_hh" = "B25003B_001",
+                                "black_own_occ_hh" = "B25003B_002",
+                                "total_hisp_lat_hh" = "B25003I_001",
+                                "hisp_lat_own_occ_hh" = "B25003I_002",
                                 "renter_occ_hh" = "B25011_026",
                                 "vacant_rental_units" = "B25004_002",
                                 "internet_hh" = "B28002_002",
@@ -61,6 +67,9 @@ dat_PA <- get_acs(geography = "state",
   
           # ownership rate
   mutate(owner_occ_hh_pct = ifelse(total_hhE > 0, round(100 * owner_occ_hhE / total_hhE), 0),
+         white_own_occ_hh_pct = ifelse(total_hhE > 0, round(100 * white_own_occ_hhE / total_white_hhE), 0),
+         black_own_occ_hh_pct = ifelse(total_hhE > 0, round(100 * black_own_occ_hhE / total_black_hhE), 0),
+         hisp_lat_own_occ_hh_pct = ifelse(total_hhE > 0, round(100 * hisp_lat_own_occ_hhE / total_hisp_lat_hhE), 0),
          
          # rentership rate
          renter_occ_hh_pct = ifelse(total_hhE > 0, round(100 * renter_occ_hhE / total_hhE), 0),
@@ -96,7 +105,18 @@ dat_PA <- get_acs(geography = "state",
          county = word(NAME, 1)) %>%
   rename(med_gross_rent = med_gross_rentE,
          med_home_value = med_home_valueE) %>%
-  dplyr::select(owner_occ_hh_pct, renter_occ_hh_pct, renter_vacant_pct, med_age_home, med_home_value, internet_hh_pct, rent_burdened_pct, mortgage_burdened_pct, med_gross_rent) 
+  dplyr::select(owner_occ_hh_pct, 
+                white_own_occ_hh_pct,
+                black_own_occ_hh_pct,
+                hisp_lat_own_occ_hh_pct,
+                renter_occ_hh_pct,
+                renter_vacant_pct,
+                med_age_home,
+                med_home_value,
+                internet_hh_pct,
+                rent_burdened_pct,
+                mortgage_burdened_pct,
+                med_gross_rent)
 
 new_column_names <- paste0(names(dat_PA), 2023)
 
@@ -105,8 +125,14 @@ names(dat_PA) <- new_column_names
 
 #### county data - 2023 ####
 dat23 <- get_acs(geography = "county", 
-                 variables = c("owner_occ_hh" = "B25011_002", 
-                               "total_hh" = "B25011_001",
+                 variables = c("total_hh" = "B25011_001",
+                               "owner_occ_hh" = "B25011_002", 
+                               "total_white_hh" = "B25003A_001",
+                               "white_own_occ_hh" = "B25003A_002",
+                               "total_black_hh" = "B25003B_001",
+                               "black_own_occ_hh" = "B25003B_002",
+                               "total_hisp_lat_hh" = "B25003I_001",
+                               "hisp_lat_own_occ_hh" = "B25003I_002",
                                "renter_occ_hh" = "B25011_026",
                                "vacant_rental_units" = "B25004_002",
                                "internet_hh" = "B28002_002",
@@ -150,6 +176,9 @@ dat23 <- get_acs(geography = "county",
   
   # ownership rate
   mutate(owner_occ_hh_pct = ifelse(total_hhE > 0, round(100 * owner_occ_hhE / total_hhE), 0),
+         white_own_occ_hh_pct = ifelse(total_hhE > 0, round(100 * white_own_occ_hhE / total_white_hhE), 0),
+         black_own_occ_hh_pct = ifelse(total_hhE > 0, round(100 * black_own_occ_hhE / total_black_hhE), 0),
+         hisp_lat_own_occ_hh_pct = ifelse(total_hhE > 0, round(100 * hisp_lat_own_occ_hhE / total_hisp_lat_hhE), 0),
          
          # rentership rate
          renter_occ_hh_pct = ifelse(total_hhE > 0, round(100 * renter_occ_hhE / total_hhE), 0),
@@ -185,7 +214,19 @@ dat23 <- get_acs(geography = "county",
          county = word(NAME, 1)) %>%
   rename(med_gross_rent = med_gross_rentE,
          med_home_value = med_home_valueE) %>%
-  dplyr::select(county, owner_occ_hh_pct, renter_occ_hh_pct, renter_vacant_pct, med_age_home, med_home_value, internet_hh_pct, rent_burdened_pct, mortgage_burdened_pct, med_gross_rent) 
+  dplyr::select(county,
+                owner_occ_hh_pct,
+                white_own_occ_hh_pct,
+                black_own_occ_hh_pct,
+                hisp_lat_own_occ_hh_pct,
+                renter_occ_hh_pct,
+                renter_vacant_pct,
+                med_age_home,
+                med_home_value,
+                internet_hh_pct,
+                rent_burdened_pct,
+                mortgage_burdened_pct,
+                med_gross_rent) 
 
 new_column_names <- paste0(names(dat23), 2023)
 
@@ -196,45 +237,34 @@ dat <- dat23  %>%
   rename(county = county2023) 
                                                                                                                     
 #### CHAS Data   
-tab1 <- read.csv("/Users/jstaro/Documents/GitHub/PHFA-Housing-Dash/data/chas_pa_2017-2021/2017thru2021-050-csv/Table1.csv") %>%
-  filter(st == 42) %>%
-  dplyr::select(name, T1_est75) %>% # occupied by renter hh
-  rename(renter_hh = T1_est75)
-
 tab8 <- read.csv("/Users/jstaro/Documents/GitHub/PHFA-Housing-Dash/data/chas_pa_2017-2021/2017thru2021-050-csv/Table8.csv") %>%
   filter(st == 42) %>%
-  dplyr::select(T8_est69, name) %>% # occupied by low-inc hh
-  rename(renter_hh_low_inc = T8_est69)
+  dplyr::select(T8_est69, name) %>% # occupied by extremely low-income hh (less than or equal to 30% HAMFI)
+  rename(renter_hh_eli = T8_est69)
 
 tab14b <- read.csv("/Users/jstaro/Documents/GitHub/PHFA-Housing-Dash/data/chas_pa_2017-2021/2017thru2021-050-csv/Table14B.csv") %>%
   filter(st == 42) %>%
-  dplyr::select(T14B_est4, name) %>% # affordable and vacant for rent
-  rename(afford_avail_units = T14B_est4)
+  dplyr::select(T14B_est4, T14B_est8, T14B_est12, name) %>%
+  mutate(afford_avail_units_eli = T14B_est4) # affordable for hh below 30% RHUD30 and vacant
 
 tab15c <- read.csv("/Users/jstaro/Documents/GitHub/PHFA-Housing-Dash/data/chas_pa_2017-2021/2017thru2021-050-csv/Table15C.csv") %>%
   filter(st == 42) %>%
-  dplyr::select(T15C_est4, #affordable + occupied + below 30% RHUD30
-                T15C_est5, name) %>% #affordable and occupied by low-inc hh
-  rename(afford_occ_no_burden = T15C_est4,
-         afford_occ_low_inc = T15C_est5)
+  dplyr::select(T15C_est5, name) %>% # affordable for hh below 30% RHUD and occupied by eli hh
+  rename(afford_occ_units_eli = T15C_est5)
 
-chas <- left_join(tab1,
-                  tab8,
+chas <- left_join(tab8,
+                  tab14b,
                   by = "name") %>%
-  left_join(tab14b, by = "name") %>%
   left_join(tab15c, by = "name") %>%
-  mutate(housing_balance = afford_avail_units + afford_occ_low_inc - renter_hh_low_inc - afford_occ_no_burden) %>%
+  mutate(housing_balance = afford_avail_units_eli + afford_occ_units_eli - renter_hh_eli) %>%
   rename(county = name) %>%
   mutate(county = gsub(" .*", "", county))
 
 chas_pa <- chas %>%
-  mutate(weight = renter_hh_low_inc / 10000,                                    
-         afford_avail_units_weighted = round(afford_avail_units * weight),
-         housing_balance_weighted = round(housing_balance * weight)) %>%
-  summarize(afford_avail_units = sum(afford_avail_units_weighted) / sum(weight),
-            housing_balance = sum(housing_balance), ####################### EDIT
+  summarize(afford_avail_units_eli = sum(afford_avail_units_eli),
+            housing_balance = sum(housing_balance),
             county = "statewide_avg",
-            renter_hh = sum(renter_hh_low_inc))
+            renter_hh = sum(renter_hh_eli))
 
 #### Census rural-urban by county 
 rural <- st_read("/Users/jstaro/Documents/GitHub/PHFA-Housing-Dash/data/2020_UA_COUNTY.xlsx") %>% 
@@ -256,8 +286,7 @@ noterie <- pa_counties %>%
   filter(county != "Erie")
 
 counties.sf <- rbind(erie, noterie) %>%
-  st_cast("POLYGON") %>%
-  distinct(county)
+  st_cast("POLYGON")
 
 #### Write panel #### 
 dat <- dat %>%

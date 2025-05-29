@@ -1,2 +1,2 @@
-afford_avail_units,housing_balance,county,renter_hh,owner_occ_hh_pct2023,renter_occ_hh_pct2023,renter_vacant_pct2023,med_age_home2023,med_home_value2023,internet_hh_pct2023,rent_burdened_pct2023,mortgage_burdened_pct2023,med_gross_rent2023
-810.589293965999,-529136,statewide_avg,411170,69,31,5,60,240500,89,75,94,1162
+afford_avail_units_eli,housing_balance,county,renter_hh,owner_occ_hh_pct2023,white_own_occ_hh_pct2023,black_own_occ_hh_pct2023,hisp_lat_own_occ_hh_pct2023,renter_occ_hh_pct2023,renter_vacant_pct2023,med_age_home2023,med_home_value2023,internet_hh_pct2023,rent_burdened_pct2023,mortgage_burdened_pct2023,med_gross_rent2023
+11459,-263951,statewide_avg,411170,69,75,44,47,31,5,60,240500,89,75,94,1162

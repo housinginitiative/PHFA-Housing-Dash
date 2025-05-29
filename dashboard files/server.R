@@ -47,6 +47,9 @@ state_avg <- st_read("state_avg_05-25.csv") %>%
 # variable aliases for display
 variable_aliases <- c(
 "owner_occ_hh_pct2023" = "Homeownership rate (2023)",
+"white_own_occ_hh_pct2023" = "White homeownership rate (2023)",
+"black_own_occ_hh_pct2023" = "Black homeownership rate (2023)",
+"hisp_lat_own_occ_hh_pct2023" = "Hispanic or Latinx homeownership rate (2023)",
 "renter_occ_hh_pct2023" = "Rentership rate (2023)",
 "renter_vacant_pct2023" = "Vacant rental units (2023)",
 "med_age_home2023" = "Median age of home (2023)",
@@ -61,6 +64,9 @@ variable_aliases <- c(
 # prefixes for legend labels 
 variable_prefix <- c(
 "owner_occ_hh_pct2023" = "",
+"white_own_occ_hh_pct2023" = "",
+"black_own_occ_hh_pct2023" = "",
+"hisp_lat_own_occ_hh_pct2023" = "",
 "renter_occ_hh_pct2023" = "",
 "renter_vacant_pct2023" = "",
 "med_age_home2023" = "",
@@ -75,6 +81,9 @@ variable_prefix <- c(
 # suffixes for legend labels
 variable_suffix <- c(
   "owner_occ_hh_pct2023" = "%",
+  "white_own_occ_hh_pct2023" = "%",
+  "black_own_occ_hh_pct2023" = "%",
+  "hisp_lat_own_occ_hh_pct2023" = "%",
   "renter_occ_hh_pct2023" = "%",
   "renter_vacant_pct2023" = "%",
   "med_age_home2023" = " years",
@@ -89,6 +98,9 @@ variable_suffix <- c(
 # variable type
 variable_type <- c(
   "owner_occ_hh_pct2023" = "percent",
+  "white_own_occ_hh_pct2023" = "percent",
+  "black_own_occ_hh_pct2023" = "percent",
+  "hisp_lat_own_occ_hh_pct2023" = "percent",
   "renter_occ_hh_pct2023" = "percent",
   "renter_vacant_pct2023" = "percent",
   "med_age_home2023" = "",
@@ -102,7 +114,6 @@ variable_type <- c(
 #### Server ####
 server <- function(input, output, session) {
 
-  
   pa_avg = reactive({
     state_avg %>%
       dplyr::select(variable = input$variable)})
@@ -167,6 +178,9 @@ ggplotly(barp) %>%
   output$indicator_desc_text <- renderText({
   description <- c(
     "owner_occ_hh_pct2023" = "Homeownership rate (%) is the percentage of households that own their homes. A higher rate indicates a greater proportion of homeowners in the area.",
+    "white_own_occ_hh_pct2023" = "White homeownership rate (%) is the percentage of white households that own their homes. A higher rate indicates a greater proportion of white homeowners in the area.",
+    "black_own_occ_hh_pct2023" = "Black homeownership rate (%) is the percentage of Black households that own their homes. A higher rate indicates a greater proportion of Black homeowners in the area.",
+    "hisp_lat_own_occ_hh_pct2023" = "Hispanic or Latinx homeownership rate (%) is the percentage of Hispanic or Latinx households that own their homes. A higher rate indicates a greater proportion of Hispanic or Latinx homeowners in the area.",
     "renter_occ_hh_pct2023" = "The rentership rate shows the share of households in a county that rent their homes. Younger households and households with limited incomes are more likely to rent than older households and households with higher incomes.",
     "renter_vacant_pct2023" = "Vacant rental units (%) represents the percentage of rental units that are currently unoccupied. A higher percentage can suggest that there's a surplus of rental housing or potentially decreased demand.",
     "med_age_home2023" = "Median age of home (years) indicates the midpoint age of homes in a specific area. Older median ages can suggest historical or older neighborhoods, while lower values might indicate newer developments.",
