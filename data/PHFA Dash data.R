@@ -34,20 +34,29 @@ dat_PA <- get_acs(geography = "state",
                                 "med_gross_rent" = "B25064_001",
                                 
                                 # rent burden
-                                "inc_less10k_rent30_35" = "B25074_006", #less 10k 30-35%
-                                "inc_less10k_rent35_40" = "B25074_007",  # less 10k 35-40%
-                                "inc_less10k_rent40_50" = "B25074_008", #less 10k 40-50%
-                                "inc_less10k_rent50plus" = "B25074_009", #Less 10k 50%+
+                                "rent_inc_less10k_20less" = "B25074_003", #less 10k under 20%
+                                "rent_inc_less10k_20_25" = "B25074_004", #less 10k 20-25%
+                                "rent_inc_less10k_25_30" = "B25074_005", #less 10k 25-30%
+                                "rent_inc_less10k_30_35" = "B25074_006", #less 10k 30-35%
+                                "rent_inc_less10k_35_40" = "B25074_007",  # less 10k 35-40%
+                                "rent_inc_less10k_40_50" = "B25074_008", #less 10k 40-50%
+                                "rent_inc_less10k_50plus" = "B25074_009", #Less 10k 50%+
                                 
-                                "inc_10_20k_rent30_35" = "B25074_015", #10-20k 30-35%
-                                "inc_10_20k_rent35_40" = "B25074_016", #10-20k 35-40%
-                                "inc_10_20k_rent40_50" = "B25074_017", #10-20k 40-50%
-                                "inc_10_20k_rent50plus" = "B25074_018", #10-20k 50%+
+                                "rent_inc_10_20k_20less" = "B25074_012", #10-20k under 20%
+                                "rent_inc_10_20k_20_25" = "B25074_013", #10-20k 20-25%
+                                "rent_inc_10_20k_25_30" = "B25074_014", #10-20k 25-30%
+                                "rent_inc_10_20k_30_35" = "B25074_015", #10-20k 30-35%
+                                "rent_inc_10_20k_35_40" = "B25074_016", #10-20k 35-40%
+                                "rent_inc_10_20k_40_50" = "B25074_017", #10-20k 40-50%
+                                "rent_inc_10_20k_50plus" = "B25074_018", #10-20k 50%+
                                 
-                                "inc_20_35k_rent30_35" = "B25074_024", #20-35k 30-35%
-                                "inc_20_35k_rent35_40" = "B25074_025", #20-35k 35-40%
-                                "inc_20_35k_rent40_50" = "B25074_026", #20-35k 40-50%
-                                "inc_20_35k_rent50plus" = "B25074_027",
+                                "rent_inc_20_35k_20less" = "B25074_021", #20-35k under 20%
+                                "rent_inc_20_35k_20_25" = "B25074_022", #20-35k 20-25%
+                                "rent_inc_20_35k_25_30" = "B25074_023", #20-35k 25-30%
+                                "rent_inc_20_35k_30_35" = "B25074_024", #20-35k 30-35%
+                                "rent_inc_20_35k_35_40" = "B25074_025", #20-35k 35-40%
+                                "rent_inc_20_35k_40_50" = "B25074_026", #20-35k 40-50%
+                                "rent_inc_20_35k_50plus" = "B25074_027", #20-35k 50%+
                                 
                                 # mortgage burden
                                 "inc_bel20k_mort30plus" = "B25101_006",
@@ -55,12 +64,7 @@ dat_PA <- get_acs(geography = "state",
                                 
                                 # owner low income
                                 "owner_inc_bel20k" = "B25101_003", #owner income bel 20k
-                                "owner_inc_20k_35k" = "B25101_007",
-                                
-                                # renter low income
-                                "renter_inc_bel10k" = "B25074_002",
-                                "renter_inc_10k_20k" = "B25074_011",
-                                "renter_inc_20k_35k" = "B25074_020"
+                                "owner_inc_20k_35k" = "B25101_007"
                                 
                   ), year = 2023, state = "PA", #20-35k 50%+
                   geometry = FALSE, survey = "acs5", output = "wide") %>%
@@ -84,15 +88,13 @@ dat_PA <- get_acs(geography = "state",
          internet_hh_pct = ifelse(total_hhE > 0, round(100 * internet_hhE / total_hhE), 0),
          
          # renter low inc
-         renter_low_inc = renter_inc_bel10kE + renter_inc_10k_20kE + renter_inc_20k_35kE,
+         renter_low_inc = sum(across(starts_with("rent_inc"))),
          
          # owner low inc
          owner_low_inc = owner_inc_bel20kE + owner_inc_20k_35kE,
          
          # rent burdened hh
-         income_bel35k_rent_more30 = inc_less10k_rent30_35E + inc_less10k_rent35_40E + inc_less10k_rent40_50E + inc_less10k_rent50plusE +
-           inc_10_20k_rent30_35E + inc_10_20k_rent35_40E + inc_10_20k_rent40_50E + inc_10_20k_rent50plusE + 
-           inc_20_35k_rent30_35E + inc_20_35k_rent35_40E + inc_20_35k_rent40_50E + inc_20_35k_rent50plusE,
+         income_bel35k_rent_more30 = sum(across(ends_with(c("_30_35E", "_35_40E", "_40_50E", "_50plusE")))),
          
          # rent burdened pct
          rent_burdened_pct = ifelse(renter_low_inc > 0, round(100 * (income_bel35k_rent_more30 / renter_low_inc)), 0),
@@ -143,20 +145,29 @@ dat23 <- get_acs(geography = "county",
                                "med_gross_rent" = "B25064_001",
                                
                                # rent burden
-                               "inc_less10k_rent30_35" = "B25074_006", #less 10k 30-35%
-                               "inc_less10k_rent35_40" = "B25074_007",  # less 10k 35-40%
-                               "inc_less10k_rent40_50" = "B25074_008", #less 10k 40-50%
-                               "inc_less10k_rent50plus" = "B25074_009", #Less 10k 50%+
+                               "rent_inc_less10k_20less" = "B25074_003", #less 10k under 20%
+                               "rent_inc_less10k_20_25" = "B25074_004", #less 10k 20-25%
+                               "rent_inc_less10k_25_30" = "B25074_005", #less 10k 25-30%
+                               "rent_inc_less10k_30_35" = "B25074_006", #less 10k 30-35%
+                               "rent_inc_less10k_35_40" = "B25074_007",  # less 10k 35-40%
+                               "rent_inc_less10k_40_50" = "B25074_008", #less 10k 40-50%
+                               "rent_inc_less10k_50plus" = "B25074_009", #Less 10k 50%+
                                
-                               "inc_10_20k_rent30_35" = "B25074_015", #10-20k 30-35%
-                               "inc_10_20k_rent35_40" = "B25074_016", #10-20k 35-40%
-                               "inc_10_20k_rent40_50" = "B25074_017", #10-20k 40-50%
-                               "inc_10_20k_rent50plus" = "B25074_018", #10-20k 50%+
+                               "rent_inc_10_20k_20less" = "B25074_012", #10-20k under 20%
+                               "rent_inc_10_20k_20_25" = "B25074_013", #10-20k 20-25%
+                               "rent_inc_10_20k_25_30" = "B25074_014", #10-20k 25-30%
+                               "rent_inc_10_20k_30_35" = "B25074_015", #10-20k 30-35%
+                               "rent_inc_10_20k_35_40" = "B25074_016", #10-20k 35-40%
+                               "rent_inc_10_20k_40_50" = "B25074_017", #10-20k 40-50%
+                               "rent_inc_10_20k_50plus" = "B25074_018", #10-20k 50%+
                                
-                               "inc_20_35k_rent30_35" = "B25074_024", #20-35k 30-35%
-                               "inc_20_35k_rent35_40" = "B25074_025", #20-35k 35-40%
-                               "inc_20_35k_rent40_50" = "B25074_026", #20-35k 40-50%
-                               "inc_20_35k_rent50plus" = "B25074_027",
+                               "rent_inc_20_35k_20less" = "B25074_021", #20-35k under 20%
+                               "rent_inc_20_35k_20_25" = "B25074_022", #20-35k 20-25%
+                               "rent_inc_20_35k_25_30" = "B25074_023", #20-35k 25-30%
+                               "rent_inc_20_35k_30_35" = "B25074_024", #20-35k 30-35%
+                               "rent_inc_20_35k_35_40" = "B25074_025", #20-35k 35-40%
+                               "rent_inc_20_35k_40_50" = "B25074_026", #20-35k 40-50%
+                               "rent_inc_20_35k_50plus" = "B25074_027", #20-35k 50%+
                                
                                # mortgage burden
                                "inc_bel20k_mort30plus" = "B25101_006",
@@ -164,12 +175,7 @@ dat23 <- get_acs(geography = "county",
                                
                                # owner low income
                                "owner_inc_bel20k" = "B25101_003", #owner income bel 20k
-                               "owner_inc_20k_35k" = "B25101_007",
-                               
-                               # renter low income
-                               "renter_inc_bel10k" = "B25074_002",
-                               "renter_inc_10k_20k" = "B25074_011",
-                               "renter_inc_20k_35k" = "B25074_020"
+                               "owner_inc_20k_35k" = "B25101_007"
                                
                  ), year = 2023, state = "PA", #20-35k 50%+
                  geometry = FALSE, survey = "acs5", output = "wide") %>%
@@ -192,19 +198,8 @@ dat23 <- get_acs(geography = "county",
          # hh with internet %
          internet_hh_pct = ifelse(total_hhE > 0, round(100 * internet_hhE / total_hhE), 0),
          
-         # renter low inc
-         renter_low_inc = renter_inc_bel10kE + renter_inc_10k_20kE + renter_inc_20k_35kE,
-         
          # owner low inc
          owner_low_inc = owner_inc_bel20kE + owner_inc_20k_35kE,
-         
-         # rent burdened hh
-         income_bel35k_rent_more30 = inc_less10k_rent30_35E + inc_less10k_rent35_40E + inc_less10k_rent40_50E + inc_less10k_rent50plusE +
-           inc_10_20k_rent30_35E + inc_10_20k_rent35_40E + inc_10_20k_rent40_50E + inc_10_20k_rent50plusE + 
-           inc_20_35k_rent30_35E + inc_20_35k_rent35_40E + inc_20_35k_rent40_50E + inc_20_35k_rent50plusE,
-         
-         # rent burdened pct
-         rent_burdened_pct = ifelse(renter_low_inc > 0, round(100 * (income_bel35k_rent_more30 / renter_low_inc)), 0),
          
          # mortgage burdened hh
          income_bel35k_mort_more30 = inc_bel20k_mort30plusE + inc_20_35k_mort30plusE,
@@ -212,6 +207,12 @@ dat23 <- get_acs(geography = "county",
          # mortgage burdened pct
          mortgage_burdened_pct = ifelse(owner_low_inc > 0, round(100 * (income_bel35k_mort_more30 / owner_low_inc)), 0),
          county = word(NAME, 1)) %>%
+  rowwise() %>%
+  mutate(renter_low_inc = sum(across(starts_with("rent_inc"))), # renter low inc
+         
+         income_bel35k_rent_more30 = sum(across(ends_with(c("_30_35E", "_35_40E", "_40_50E", "_50plusE")))), # rent burdened hh
+         
+         rent_burdened_pct = ifelse(renter_low_inc > 0, round(100 * (income_bel35k_rent_more30 / renter_low_inc)), 0)) %>% # rent burdened pct
   rename(med_gross_rent = med_gross_rentE,
          med_home_value = med_home_valueE) %>%
   
@@ -269,7 +270,7 @@ chas_pa <- chas %>%
   summarize(afford_avail_units_eli = sum(afford_avail_units_eli),
             housing_balance = sum(housing_balance),
             county = "statewide_avg",
-            renter_hh = sum(renter_hh_eli))
+            renter_hh_eli = sum(renter_hh_eli))
 
 #### Census rural-urban by county 
 rural <- st_read("/Users/jstaro/Documents/GitHub/PHFA-Housing-Dash/data/2020_UA_COUNTY.xlsx") %>% 
