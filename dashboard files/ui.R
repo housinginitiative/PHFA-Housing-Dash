@@ -357,8 +357,8 @@ ui <- navbarPage(
                p(
                  HTML(
                    "For questions about this dashboard, please contact
-        Anna Duan, Housing Research Analyst, at
-        <a href='mailto:annaduan@sas.upenn.edu'>annaduan@sas.upenn.edu</a>
+        Rebecca Yae, Director, at
+        <a href='mailto:ryae@design.upenn.edu'>ryae@design.upenn.edu</a>
         and/or Amy Sechrist, Senior Policy Officer, at
         <a href='mailto:asechrist@phfa.org'>asechrist@phfa.org</a>"
                  )

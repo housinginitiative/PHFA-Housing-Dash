@@ -41,8 +41,7 @@ rural <- panel.sf %>%
   st_as_sf()
 
 # state averages for variables
-state_avg <- st_read("state_avg_05-25.csv") %>%
-  dplyr::mutate(housing_balance = 267074)
+state_avg <- st_read("state_avg_05-25.csv")
 
 # variable aliases for display
 variable_aliases <- c(
@@ -58,7 +57,7 @@ variable_aliases <- c(
 "rent_burdened_pct2023" = "Rent burdened households (2023)",
 "mortgage_burdened_pct2023" = "Mortgage burdened households (2023)",
 "med_gross_rent2023" = "Median gross rent (2023)",
-"housing_balance" = "Affordable housing shortage (2023)"
+"housing_balance" = "Affordable housing shortage (2021)"
 )
 
 # prefixes for legend labels 
@@ -121,14 +120,17 @@ server <- function(input, output, session) {
   dat.sf = reactive({
     panel.sf %>%
       dplyr::select(variable = input$variable, county, geometry, lat, lon, rural) %>%
-      st_as_sf()})
+      st_as_sf()
+    })
+  observeEvent(dat.sf(), {print(dat.sf())})
   
   dat = reactive({
     panel %>%
       dplyr::select(county, variable = input$variable, 
                     variable_bar = input$variable_bar, 
                     variable_scatter_x = input$variable_scatter_x, variable_scatter_y = input$variable_scatter_y, 
-                    variable_tab = input$variable_tab, rural)})
+                    variable_tab = input$variable_tab,
+                    rural)})
   
   palette_blue <- c("#C4E8F8", "#4292c6", "#2171b5", "#08519c", "#08306b")
   #### reactive palette ####
@@ -174,7 +176,7 @@ ggplotly(barp) %>%
     
   })
   
-##### leaflet menu indicator information #####
+#### leaflet menu indicator information #####
   output$indicator_desc_text <- renderText({
   description <- c(
     "owner_occ_hh_pct2023" = "Homeownership rate (%) is the percentage of households that own their homes. A higher rate indicates a greater proportion of homeowners in the area.",
@@ -247,8 +249,6 @@ ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
     return(paste(alias, "rankings", sep = " "))
   })
   
-
-  
   output$sum <- renderTable({
     data.frame(quartile_1 = quantile(dat()$variable_tab, probs = 0.25, na.rm = TRUE),
                mean = mean(dat()$variable_tab, na.rm = TRUE),
@@ -260,7 +260,6 @@ ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
   })
 
   #### Leaflet prep ####
-
   
   ##### title #####
   title_dat <- tags$div(
@@ -289,7 +288,7 @@ ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
       "<strong>%s County</strong><br/>
       <strong>%s</strong>: %s<sup></sup><br/>
       <strong>Pennsylvania:</strong> %s",
-      dat.sf()$county, alias, paste(prefix, formatted_val_county, suffix, sep = ""), paste(prefix, formatted_val_state, suffix, sep = "")
+      dat.sf()$county, alias, paste(prefix, formatted_val_county, ifelse(!is.na(val_county), suffix, ""), sep = ""), paste(prefix, formatted_val_state, suffix, sep = "")
     ) %>% lapply(htmltools::HTML)
   })
 
@@ -331,13 +330,12 @@ ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
 
     # legend labels
     labels_map <- c(
-      as.character(round(quantile(var_map, probs = c(0.2)),0)),
-      as.character(round(quantile(var_map, probs = c(0.4)),0)),
-      as.character(round(quantile(var_map, probs = c(0.6)),0)),
-      as.character(round(quantile(var_map, probs = c(0.8)),0)),
-      as.character(round(quantile(var_map, probs = c(1)),0)))
+      as.character(round(quantile(var_map, probs = c(0.2), na.rm = TRUE) ,0)),
+      as.character(round(quantile(var_map, probs = c(0.4), na.rm = TRUE) ,0)),
+      as.character(round(quantile(var_map, probs = c(0.6), na.rm = TRUE) ,0)),
+      as.character(round(quantile(var_map, probs = c(0.8), na.rm = TRUE) ,0)),
+      as.character(round(quantile(var_map, probs = c(1), na.rm = TRUE) ,0)))
     
-  
     #### Leaflet map ####
     leaflet(options = leafletOptions(minZoom = 7)) %>%
       addProviderTiles(providers$CartoDB.Positron) %>%
@@ -348,7 +346,7 @@ ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
                     , lat1 = 38.5
                     , lng2 = -73
                     , lat2 = 43.3) %>%
-      addPolygons(data = dat.sf(), fillColor = ~mapPalette()(dat.sf()$variable),
+      addPolygons(data = dat.sf(), fillColor = ~ mapPalette()(dat.sf()$variable),
                   color = "white",
                   weight = 1,
                   opacity = 1,
@@ -376,7 +374,7 @@ ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
                     # Construct the label for each bin
                     labels[i] <- paste(lower_bound, "-", upper_bound)
                   }
-                  return(labels)},
+                 return(labels)},
                 values = quantile(dat.sf()$variable, probs = c(0, 0.2, 0.4, 0.6, 0.8, 1), na.rm = TRUE),
                 position = "bottomright") %>%
       addLabelOnlyMarkers(data = dat.sf(), ~dat.sf()$lon, ~dat.sf()$lat, 
@@ -409,7 +407,7 @@ ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
   })
 
   
-#### data download ####
+  #### data download ####
   output$downloadDataSel <- downloadHandler(
     filename = function() {
       paste(input$variable_tab, ".csv", sep = "")

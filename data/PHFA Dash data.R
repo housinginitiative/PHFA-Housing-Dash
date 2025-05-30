@@ -214,6 +214,10 @@ dat23 <- get_acs(geography = "county",
          county = word(NAME, 1)) %>%
   rename(med_gross_rent = med_gross_rentE,
          med_home_value = med_home_valueE) %>%
+  
+  #Fix NAs
+  mutate(across(everything(), ~ ifelse(is.nan(.), NA, .))) %>%
+  
   dplyr::select(county,
                 owner_occ_hh_pct,
                 white_own_occ_hh_pct,
@@ -239,7 +243,7 @@ dat <- dat23  %>%
 #### CHAS Data   
 tab8 <- read.csv("/Users/jstaro/Documents/GitHub/PHFA-Housing-Dash/data/chas_pa_2017-2021/2017thru2021-050-csv/Table8.csv") %>%
   filter(st == 42) %>%
-  dplyr::select(T8_est69, name) %>% # occupied by extremely low-income hh (less than or equal to 30% HAMFI)
+  dplyr::select(name, T8_est69) %>% # occupied by extremely low-income hh (less than or equal to 30% HAMFI)
   rename(renter_hh_eli = T8_est69)
 
 tab14b <- read.csv("/Users/jstaro/Documents/GitHub/PHFA-Housing-Dash/data/chas_pa_2017-2021/2017thru2021-050-csv/Table14B.csv") %>%
@@ -258,7 +262,8 @@ chas <- left_join(tab8,
   left_join(tab15c, by = "name") %>%
   mutate(housing_balance = afford_avail_units_eli + afford_occ_units_eli - renter_hh_eli) %>%
   rename(county = name) %>%
-  mutate(county = gsub(" .*", "", county))
+  mutate(county = gsub(" .*", "", county)) %>%
+  mutate(across(!contains("county"), as.numeric))
 
 chas_pa <- chas %>%
   summarize(afford_avail_units_eli = sum(afford_avail_units_eli),
@@ -286,7 +291,8 @@ noterie <- pa_counties %>%
   filter(county != "Erie")
 
 counties.sf <- rbind(erie, noterie) %>%
-  st_cast("POLYGON")
+  st_cast("POLYGON") %>%
+  distinct(county, .keep_all = TRUE)
 
 #### Write panel #### 
 dat <- dat %>%
