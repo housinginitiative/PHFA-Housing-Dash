@@ -16,7 +16,7 @@ conflicts_prefer(dplyr::filter)
 
 #### Data processing ####  
 # original data
-dat <- st_read("PHFA_dash_data_May.25.geojson") %>%
+dat <- st_read("PHFA_dash_data_June.25.geojson") %>%
   dplyr::mutate(housing_balance = ifelse(housing_balance < 0, abs(housing_balance), 0))
 
 # spatial panel
@@ -41,23 +41,25 @@ rural <- panel.sf %>%
   st_as_sf()
 
 # state averages for variables
-state_avg <- st_read("state_avg_05-25.csv")
+state_avg <- st_read("state_avg_06-25.csv") %>%
+  dplyr::mutate(housing_balance = as.numeric(ifelse(as.numeric(housing_balance) < 0, abs(as.numeric(housing_balance)), 0)))
 
 # variable aliases for display
 variable_aliases <- c(
 "owner_occ_hh_pct2023" = "Homeownership rate (2023)",
 "white_own_occ_hh_pct2023" = "White homeownership rate (2023)",
 "black_own_occ_hh_pct2023" = "Black homeownership rate (2023)",
-"hisp_lat_own_occ_hh_pct2023" = "Hispanic or Latinx homeownership rate (2023)",
+"hisp_lat_own_occ_hh_pct2023" = "Hispanic or Latino homeownership rate (2023)",
 "renter_occ_hh_pct2023" = "Rentership rate (2023)",
-"renter_vacant_pct2023" = "Vacant rental units (2023)",
-"med_age_home2023" = "Median age of home (2023)",
+"renter_vacant_pct2023" = "Rental vacancy rate (2023)",
+"med_age_home2023" = "Median year home built (2023)",
 "med_home_value2023" = "Median home value (2023)",
-"internet_hh_pct2023" = "Households with internet access (2023)",
-"rent_burdened_pct2023" = "Rent burdened households (2023)",
-"mortgage_burdened_pct2023" = "Mortgage burdened households (2023)",
+"internet_hh_pct2023" = "Internet access rate (2023)",
+"rent_burdened_pct2023" = "Rent burden rate (2023)",
+"mortgage_burdened_pct2023" = "Mortgage burden rate (2023)",
 "med_gross_rent2023" = "Median gross rent (2023)",
-"housing_balance" = "Affordable housing shortage (2021)"
+"housing_balance" = "Affordable housing shortage (2021)",
+"resunitpermitsrate23" = "Residential permit rate (2023)"
 )
 
 # prefixes for legend labels 
@@ -74,7 +76,8 @@ variable_prefix <- c(
 "rent_burdened_pct2023" = "",
 "mortgage_burdened_pct2023" = "",
 "med_gross_rent2023" = "$",
-"housing_balance" = ""
+"housing_balance" = "",
+"resunitpermitsrate23" = ""
 )
 
 # suffixes for legend labels
@@ -85,13 +88,14 @@ variable_suffix <- c(
   "hisp_lat_own_occ_hh_pct2023" = "%",
   "renter_occ_hh_pct2023" = "%",
   "renter_vacant_pct2023" = "%",
-  "med_age_home2023" = " years",
+  "med_age_home2023" = "",
   "med_home_value2023" = "",
   "internet_hh_pct2023" = "%",
   "rent_burdened_pct2023" = "%",
   "mortgage_burdened_pct2023" = "%",
   "med_gross_rent2023" = "",
-  "housing_balance" = " units"
+  "housing_balance" = " units",
+  "resunitpermitsrate23" = " permits"
 )
 
 # variable type
@@ -102,13 +106,14 @@ variable_type <- c(
   "hisp_lat_own_occ_hh_pct2023" = "percent",
   "renter_occ_hh_pct2023" = "percent",
   "renter_vacant_pct2023" = "percent",
-  "med_age_home2023" = "",
+  "med_age_home2023" = "year",
   "med_home_value2023" = "currency",
   "internet_hh_pct2023" = "percent",
   "rent_burdened_pct2023" = "percent",
   "mortgage_burdened_pct2023" = "percent",
   "med_gross_rent2023" = "currency",
-  "housing_balance" = ""
+  "housing_balance" = "",
+  "resunitpermitsrate23" = ""
 )
 #### Server ####
 server <- function(input, output, session) {
@@ -154,44 +159,69 @@ server <- function(input, output, session) {
     df <- df %>%
       dplyr::mutate(rural_score = ifelse(rural == 1, 100000, 0),
              order_id = rural_score + variable_bar) %>%
-       dplyr::filter(county %in% counties)
+      dplyr::filter(county %in% counties) %>%
+      dplyr::mutate(rural = case_when(rural == 1 ~ "Rural",
+                                      rural == 0 ~ "Urban"))
     
     v <- input$variable_bar
+    prefix <- variable_prefix[v]
     alias <- variable_aliases[v]
+    suffix <- variable_suffix[v]
+    type <- variable_type[v]
+    
+##custom hover text##
+    df$hover_text <- paste0(alias, ": ", prefix, format(df$variable_bar, big.mark = ifelse(type == "year", "", ",")), suffix, "<br>",
+                           "Rural or Urban: ", df$rural, "<br>",
+                           "County: ", df$county, "<br>")
   
-barp <- ggplot(data = df, aes(x = reorder(county, order_id), y = variable_bar, fill = variable_bar)) +
-      geom_bar(color = "transparent", stat = "identity", aes(fill = as.factor(rural))) +
+barp <- ggplot(data = df, aes(x = reorder(county, order_id), y = variable_bar)) +
+  geom_bar(color = "transparent", stat = "identity", aes(fill = as.factor(rural), text = hover_text)) +
   scale_fill_manual(values = c("#4e72aa", "#94bcda")) +
-      labs(title = paste(alias, "by PA county", sep = " "), caption = "Duan, Anna. Pennsylvania Affordable Housing Dashboard, Housing Initiative at Penn, Oct. 2023, annaduan09.shinyapps.io/PHFAdashOct3/. ", fill = alias, color = "Rural County", y = alias, x = "Urban Counties                                          Rural Counties") +
-      theme_minimal() +
-      theme(legend.position = "none") +
-      coord_flip() 
+  labs(title = paste(alias, "by PA county", sep = " "),
+       caption = "Pennsylvania Affordable Housing Dashboard, Housing Initiative at Penn, November 2025, https://housinginitiative.shinyapps.io/PHFA_Housing_Dashboard/. ", 
+       fill = "",
+       y = alias, x = "") +
+  scale_y_continuous(labels = scales::number_format(prefix = prefix, suffix = suffix, big.mark = ifelse(type == "year", "", ","))) + 
+  theme_minimal() +
+  theme(legend.position = "bottom") +
+  coord_flip() 
 
-ggplotly(barp) %>%
-  plotly::layout(margin = list(l = 50, r = 50, b = 100, t = 50),
-         annotations = list(x = 0.5, y = -0.15, text = "Source: Duan, Anna. Pennsylvania Affordable Housing Dashboard, Housing Initiative at Penn, Oct. 2023, annaduan09.shinyapps.io/PHFAdashOct3/. ",
+ggplotly(barp,
+         tooltip = "text") %>%
+  plotly::layout(
+    margin = list(l = 50, r = 50, b = 100, t = 50),
+    annotations = list(x = 0.5, y = -0.2, text = "Source: Pennsylvania Affordable Housing Dashboard, Housing Initiative at Penn, November 2025, https://housinginitiative.shinyapps.io/PHFA_Housing_Dashboard/. ",
                             xref='paper', yref='paper', showarrow = F, 
                             xanchor='center', yanchor='bottom', xshift=0, yshift=0,
-                            font = list(size = 12, color = "gray")))
-    
+                            font = list(size = 12, color = "gray")),
+    yaxis = list(showticksuffix = "first",
+                 ticksuffix = "%"),
+    legend = list(
+      orientation = "h",
+      x = "0.5",
+      xanchor = "center",
+      y = -.25)
+    )
+
   })
   
 #### leaflet menu indicator information #####
   output$indicator_desc_text <- renderText({
   description <- c(
-    "owner_occ_hh_pct2023" = "Homeownership rate (%) is the percentage of households that own their homes. A higher rate indicates a greater proportion of homeowners in the area.",
-    "white_own_occ_hh_pct2023" = "White homeownership rate (%) is the percentage of white households that own their homes. A higher rate indicates a greater proportion of white homeowners in the area.",
-    "black_own_occ_hh_pct2023" = "Black homeownership rate (%) is the percentage of Black households that own their homes. A higher rate indicates a greater proportion of Black homeowners in the area.",
-    "hisp_lat_own_occ_hh_pct2023" = "Hispanic or Latinx homeownership rate (%) is the percentage of Hispanic or Latinx households that own their homes. A higher rate indicates a greater proportion of Hispanic or Latinx homeowners in the area.",
-    "renter_occ_hh_pct2023" = "The rentership rate shows the share of households in a county that rent their homes. Younger households and households with limited incomes are more likely to rent than older households and households with higher incomes.",
-    "renter_vacant_pct2023" = "Vacant rental units (%) represents the percentage of rental units that are currently unoccupied. A higher percentage can suggest that there's a surplus of rental housing or potentially decreased demand.",
-    "med_age_home2023" = "Median age of home (years) indicates the midpoint age of homes in a specific area. Older median ages can suggest historical or older neighborhoods, while lower values might indicate newer developments.",
-    "med_home_value2023" = "Median home value ($) is the midpoint value of homes in the area. This can provide an insight into the overall affordability and property values of a region.",
-    "internet_hh_pct2023" = "Households with internet access (%) is the percentage of households that have access to the internet. This can provide insights into the area's technological infrastructure and development.",
-    "rent_burdened_pct2023" = "Rent-burdened households represents the share of renter households with incomes less than $35,000 that spend 30% or more of their income on rent. Low-income households that spend a high share of their income on housing costs have limited residual income to spend on other household expenses, much less save for emergencies. These households are more vulnerable to setbacks to their household finances and to more wide scale economic shocks.",
-    "mortgage_burdened_pct2023" = "Mortgage burdened households (%) indicates the low-income households spending 30% or more of their income on mortgage payments. Higher percentages may show potential financial strain for low-income homeowners.",
-    "med_gross_rent2023" = "Median gross rent conveys the midpoint amount that households pay in total for their contract rent, utilities, and fuel costs. Low-income households living in areas with higher median gross rent tend to have greater challenges with housing affordability.",
-    "housing_balance" = "Affordable housing shortage (units) refers to the difference between the demand for rental units affordable to extremely low-income households (income < 30% of area median income) and the supply available. A positive number indicates a shortage of affordable housing units.")
+    "owner_occ_hh_pct2023" = "Homeownership rate (%) is the percentage of all households that own their homes. A higher rate indicates a greater proportion of homeowners in the area. Hover over a county to see that county's rate and the state average rate.",
+    "white_own_occ_hh_pct2023" = "White homeownership rate (%) is the percentage of white households that own their homes. A higher rate indicates a greater proportion of white homeowners in the area. Hover over a county to see that county's rate and the state average rate.",
+    "black_own_occ_hh_pct2023" = "Black homeownership rate (%) is the percentage of Black households that own their homes. A higher rate indicates a greater proportion of Black homeowners in the area. Hover over a county to see that county's rate and the state average rate.",
+    "hisp_lat_own_occ_hh_pct2023" = "Hispanic or Latino homeownership rate (%) is the percentage of Hispanic or Latino households that own their homes. A higher rate indicates a greater proportion of Hispanic or Latino homeowners in the area. Hover over a county to see that county's rate and the state average rate.",
+    "renter_occ_hh_pct2023" = "The rentership rate shows the share of households in a county that rent their homes. Younger households and households with limited incomes are more likely to rent than older households and households with higher incomes. Hover over a county to see that county's rate and the state average rate.",
+    "renter_vacant_pct2023" = "Rental vacancy rate (%) represents the percentage of rental units that are currently unoccupied. A higher percentage can suggest that there's a surplus of rental housing or potentially decreased demand. Hover over a county to see that county's rate and the state average rate.",
+    "med_age_home2023" = "Median year home built indicates the midpoint age of homes in a specific area. Older median years can suggest historical neighborhoods, while later median years might indicate newer developments. Hover over a county to see that county's median year of home construction and the state median year of home construction.",
+    "med_home_value2023" = "Median home value ($) is the midpoint value of homes in the area. This can provide an insight into the overall affordability and property values of a region. Hover over a county to see that county's median value and the state median value.",
+    "internet_hh_pct2023" = "Internet access rate (%) is the percentage of households that have access to the internet. This can provide insights into the area's technological infrastructure and development. Hover over a county to see that county's rate and the state average rate.",
+    "rent_burdened_pct2023" = "Rent-burdened households represents the share of renter households with incomes less than $35,000 that spend 30% or more of their income on rent. Low-income households that spend a high share of their income on housing costs have limited residual income to spend on other household expenses, much less save for emergencies. These households are more vulnerable to setbacks to their household finances and to more wide scale economic shocks. Hover over a county to see that county's rate and the state average rate.",
+    "mortgage_burdened_pct2023" = "Mortgage burden rate (%) indicates the share of owner-occupied households with incomes less than $35,000 that spend 30% or more of their income on mortgage payments. Higher percentages may show potential financial strain for low-income homeowners. Hover over a county to see that county's rate and the state average rate.",
+    "med_gross_rent2023" = "Median gross rent conveys the midpoint amount that households pay in total for their contract rent, utilities, and fuel costs. Low-income households living in areas with higher median gross rent tend to have greater challenges with housing affordability. Hover over a county to see that county's madian value and the state median value.",
+    "housing_balance" = "Affordable housing shortage (units) refers to the difference between the demand for rental units affordable to extremely low-income households (income < 30% of area median income) and the supply available. A positive number indicates a shortage of affordable housing units. Hover over a county to see that county's shortage and the state total shortage.",
+    "resunitpermitsrate23" = "The residential permit rate represents the number of residential permits that were approved per 10,000 housing units for each county in 2023. 'Residential permits' specifically include approvals of new, privately-owned residential construction. A higher number indicates that a county is approving new housing unit permits at a quicker rate compared to a county with a lower number. Hover over a county to see that county's rate and the state average rate.")
     v <- input$variable
     desc <- description[v]
     return(desc)
@@ -200,32 +230,51 @@ ggplotly(barp) %>%
   #### scatter plot ####
   output$scatter <- renderPlotly({
     df <- dat() %>% as.data.frame() %>%
+      mutate(rural = case_when(rural == 1 ~ "Rural",
+                               rural == 0 ~ "Urban")) %>%
       mutate(rural = as.factor(rural))
 
 x <- input$variable_scatter_x
 y <- input$variable_scatter_y
+prefix_x <- variable_prefix[x]
+prefix_y <- variable_prefix[y]
 alias_x <- variable_aliases[x]
 alias_y <- variable_aliases[y]
+suffix_x <- variable_suffix[x]
+suffix_y <- variable_suffix[y]
+type_x <- variable_type[x]
+type_y <- variable_type[y]
 
 # custom hover text
-df$hover_text <- paste("County: ", df$county, "<br>")
+df$hover_text <- paste0(alias_x, ": ", prefix_x, format(df$variable_scatter_x, big.mark = ifelse(type_x == "year", "", ",")), suffix_x, "<br>",
+                       alias_y, ": ", prefix_y, format(df$variable_scatter_y, big.mark = ifelse(type_y == "year", "", ",")), suffix_y, "<br>",
+                       "Rural or Urban: ", df$rural, "<br>",
+                       "County: ", df$county, "<br>")
 
 scatterp <- ggplot(df, aes(x = variable_scatter_x, y = variable_scatter_y)) +
   geom_smooth(se = FALSE, colour = "gray", size = 0.5) +
   geom_point(stat = "identity", 
              aes(color = rural, text = hover_text), 
              size = 2, alpha = 0.8) +
-  scale_color_manual(values = c("#4e72aa", "#94bcda"), name = "Rural") +
+  scale_color_manual(values = c("#4e72aa", "#94bcda"), name = "") +
+  scale_x_continuous(labels = scales::number_format(prefix = prefix_x, suffix = suffix_x, big.mark = ifelse(type_x == "year", "", ","))) + 
+  scale_y_continuous(labels = scales::number_format(prefix = prefix_y, suffix = suffix_y, big.mark = ifelse(type_y == "year", "", ","))) + 
   labs(title = paste(alias_x, "as a function of", alias_y, sep = " "),
        x = alias_x, y = alias_y) + theme_minimal()
 
 ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
-         hoverinfo = "text") %>%
+         tooltip = "text") %>%
   plotly::layout(margin = list(l = 50, r = 50, b = 100, t = 50),
-                 annotations = list(x = 0.5, y = -0.2, text = "Source: Duan, Anna. Pennsylvania Affordable Housing Dashboard, Housing Initiative at Penn, Jan. 2024, https://housinginitiative.shinyapps.io/PHFA_Housing_Dashboard/. ",
+                 annotations = list(x = 0.5, y = -0.2, text = "Source: Pennsylvania Affordable Housing Dashboard, Housing Initiative at Penn, November 2025, https://housinginitiative.shinyapps.io/PHFA_Housing_Dashboard/. ",
                                     xref='paper', yref='paper', showarrow = F,
                                     xanchor='center', yanchor='bottom', xshift=0, yshift=0,
-                                    font = list(size = 12, color = "gray")))})
+                                    font = list(size = 12, color = "gray")),
+                 legend = list(
+                   orientation = "h",
+                   x = "0.5",
+                   xanchor = "center",
+                   y = -.25))
+})
 
   #### Data table ####
   output$table <- DT::renderDataTable({
@@ -250,11 +299,12 @@ ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
   })
   
   output$sum <- renderTable({
-    data.frame(quartile_1 = quantile(dat()$variable_tab, probs = 0.25, na.rm = TRUE),
+    data.frame(minimum = min(dat()$variable_tab, na.rm = TRUE),
+               percentile_25th = quantile(dat()$variable_tab, probs = 0.25, na.rm = TRUE),
                mean = mean(dat()$variable_tab, na.rm = TRUE),
                median = median(dat()$variable_tab, na.rm = TRUE),
-               quartile_3 = quantile(dat()$variable_tab, probs = 0.75, na.rm = TRUE),
-               max = max(dat()$variable_tab, na.rm = TRUE)) 
+               percentile_75th = quantile(dat()$variable_tab, probs = 0.75, na.rm = TRUE),
+               maximum = max(dat()$variable_tab, na.rm = TRUE)) 
     
     
   })
@@ -273,15 +323,16 @@ ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
     prefix <- variable_prefix[v]
     suffix <- variable_suffix[v]
     alias <- variable_aliases[v]
+    type <- variable_type[v]
     
     # Format the county value
     val_county <- dat.sf()$variable
-    formatted_val_county <- format(val_county, big.mark = ",", scientific = FALSE)
+    formatted_val_county <- format(val_county, big.mark = ifelse(type == "year", "", ","), scientific = FALSE)
     formatted_val_county <- gsub("\\.0+$", "", formatted_val_county)
     
     # Format the state average value
     val_state <- round(as.numeric(pa_avg()$variable))
-    formatted_val_state <- format(val_state, big.mark = ",", scientific = FALSE)
+    formatted_val_state <- format(val_state, big.mark = ifelse(type == "year", "", ","), scientific = FALSE)
     formatted_val_state <- gsub("\\.0+$", "", formatted_val_state)
     
     sprintf(
@@ -328,7 +379,7 @@ ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
       }
     }
 
-    # legend labels
+    # legend labels ## suspect these are not used and can be deleted ##
     labels_map <- c(
       as.character(round(quantile(var_map, probs = c(0.2), na.rm = TRUE) ,0)),
       as.character(round(quantile(var_map, probs = c(0.4), na.rm = TRUE) ,0)),
@@ -369,8 +420,8 @@ ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
                   labels <- vector("character", length(cuts) - 1)
                   for (i in 1:(length(cuts) - 1)) {
                     # Apply the prefix and suffix to each bound + format numbers with commas
-                    lower_bound <- paste0(prefix, formatC(cuts[i], format = "f", big.mark = ",", digits = 0), suffix)
-                    upper_bound <- paste0(prefix, formatC(cuts[i + 1], format = "f", big.mark = ",", digits = 0), suffix)
+                    lower_bound <- paste0(prefix, formatC(cuts[i], format = "f", big.mark = ifelse(variableType == "year", "", ","), digits = 0), suffix)
+                    upper_bound <- paste0(prefix, formatC(cuts[i + 1], format = "f", big.mark = ifelse(variableType == "year", "", ","), digits = 0), suffix)
                     # Construct the label for each bin
                     labels[i] <- paste(lower_bound, "-", upper_bound)
                   }
@@ -389,21 +440,21 @@ ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
                               "font-size" = "14px",
                               "text-shadow" = "-0.25px -0.25px 0 #607d8b, 0.25px -0.25px 0 #607d8b, -0.25px 0.25px 0 #607d8b, 0.25px 0.25px 0 #607d8b" # Dark gray outline
                               )),
-                          group = "county names") %>%
+                          group = "County Names") %>%
       addPolygons(data = rural,
         color = "orchid",
         weight = 5,
         opacity = 1,
-        group  = "rural counties") %>%
-      addLegend(group = "rural counties",
+        group  = "Rural Counties") %>%
+      addLegend(group = "Rural Counties",
                 colors = "orchid",
-                labels = "Rural Counties",
+                labels = "Rural Counties - as defined by ACS<br/>See GitHub repository for more detail",
                 position = "bottomright") %>%
       addLayersControl(position = "bottomright",
-        overlayGroups = c("rural counties", "county names"), 
+        overlayGroups = c("Rural Counties", "County Names"), 
         options = layersControlOptions(collapsed = F))%>%
-      groupOptions("county names", zoomLevels = 8:100) %>%
-      groupOptions("rural counties", zoomLevels = FALSE)
+      groupOptions("County Names", zoomLevels = 8:100) %>%
+      groupOptions("Rural Counties", zoomLevels = FALSE)
   })
 
   
