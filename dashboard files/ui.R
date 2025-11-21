@@ -51,22 +51,23 @@ ui <- navbarPage(
             "Homeownership rate (2023)" = "owner_occ_hh_pct2023",
             "White homeownership rate (2023)" = "white_own_occ_hh_pct2023",
             "Black homeownership rate (2023)" = "black_own_occ_hh_pct2023",
-            "Hispanic or Latinx homeownership rate (2023)" = "hisp_lat_own_occ_hh_pct2023",
+            "Hispanic or Latino homeownership rate (2023)" = "hisp_lat_own_occ_hh_pct2023",
             "Median home value (2023)" = "med_home_value2023",
-            "Mortgage burdened households (2023)" = "mortgage_burdened_pct2023"
+            "Mortgage burden rate (2023)" = "mortgage_burdened_pct2023"
           ),
           "Renter households" = list(
             "Rentership rate (2023)" = "renter_occ_hh_pct2023",
-            "Rent burdened households (2023)" = "rent_burdened_pct2023",
+            "Rent burden rate (2023)" = "rent_burdened_pct2023",
             "Median gross rent (2023)" = "med_gross_rent2023"
           ),
           "Housing stock" = list(
-            "Vacant rental units (2023)" = "renter_vacant_pct2023",
-            "Median age of home (2023)" = "med_age_home2023",
+            "Rental vacancy rate (2023)" = "renter_vacant_pct2023",
+            "Median year home built (2023)" = "med_age_home2023",
             # "Affordable rent units available" = "afford_avail_units",
-            "Affordable housing shortage (2021)" = "housing_balance"
+            "Affordable housing shortage (2021)" = "housing_balance",
+            "Residential permit rate (2023)" = "resunitpermitsrate23"
           ),
-          "Other topics" = list("Households with internet access (2023)" = "internet_hh_pct2023")
+          "Other topics" = list("Internet access rate (2023)" = "internet_hh_pct2023")
         ),
         selected = "owner_occ_hh_pct2023"
       ),
@@ -92,22 +93,23 @@ ui <- navbarPage(
               "Homeownership rate (2023)" = "owner_occ_hh_pct2023",
               "White homeownership rate (2023)" = "white_own_occ_hh_pct2023",
               "Black homeownership rate (2023)" = "black_own_occ_hh_pct2023",
-              "Hispanic or Latinx homeownership rate (2023)" = "hisp_lat_own_occ_hh_pct2023",
+              "Hispanic or Latino homeownership rate (2023)" = "hisp_lat_own_occ_hh_pct2023",
               "Median home value (2023)" = "med_home_value2023",
-              "Mortgage burdened households (2023)" = "mortgage_burdened_pct2023"
+              "Mortgage burden rate (2023)" = "mortgage_burdened_pct2023"
             ),
             "Renter households" = list(
               "Rentership rate (2023)" = "renter_occ_hh_pct2023",
-              "Rent burdened households (2023)" = "rent_burdened_pct2023",
+              "Rent burden rate (2023)" = "rent_burdened_pct2023",
               "Median gross rent (2023)" = "med_gross_rent2023"
             ),
             "Housing stock" = list(
-              "Vacant rental units (2023)" = "renter_vacant_pct2023",
-              "Median age of home (2023)" = "med_age_home2023",
+              "Rental vacancy rate (2023)" = "renter_vacant_pct2023",
+              "Median year home built (2023)" = "med_age_home2023",
               # "Affordable rent units available" = "afford_avail_units",
-              "Affordable housing shortage (2021)" = "housing_balance"
+              "Affordable housing shortage (2021)" = "housing_balance",
+              "Residential permit rate (2023)" = "resunitpermitsrate23"
             ),
-            "Other topics" = list("Households with internet access (2023)" = "internet_hh_pct2023")
+            "Other topics" = list("Internet access rate (2023)" = "internet_hh_pct2023")
           ),
           selected = "owner_occ_hh_pct2023"
         ),
@@ -183,12 +185,12 @@ ui <- navbarPage(
             "Wyoming",
             "York"
           ),
-          selected = list("Adams", "Allegheny", "Armstrong", "Beaver", "Bedford", "Berks", "Philadelphia"),
+          selected = list("Allegheny", "Cameron", "Dauphin", "Fayette", "Philadelphia", "Potter"),
           multiple = TRUE
         ),
         br(),
         shiny::p(
-          "Select an indicator to compare across counties and rural status. Use the slider bar to show more or fewer counties."
+          "Select an indicator to compare across counties and rural status."
         ),
         out =
           img(src = 'logos.png', height = 120)
@@ -214,22 +216,23 @@ ui <- navbarPage(
                      "Homeownership rate (2023)" = "owner_occ_hh_pct2023",
                      "White homeownership rate (2023)" = "white_own_occ_hh_pct2023",
                      "Black homeownership rate (2023)" = "black_own_occ_hh_pct2023",
-                     "Hispanic or Latinx homeownership rate (2023)" = "hisp_lat_own_occ_hh_pct2023",
+                     "Hispanic or Latino homeownership rate (2023)" = "hisp_lat_own_occ_hh_pct2023",
                      "Median home value (2023)" = "med_home_value2023",
-                     "Mortgage burdened households (2023)" = "mortgage_burdened_pct2023"
+                     "Mortgage burden rate (2023)" = "mortgage_burdened_pct2023"
                    ),
                    "Renter households" = list(
                      "Rentership rate (2023)" = "renter_occ_hh_pct2023",
-                     "Rent burdened households (2023)" = "rent_burdened_pct2023",
+                     "Rent burden rate (2023)" = "rent_burdened_pct2023",
                      "Median gross rent (2023)" = "med_gross_rent2023"
                    ),
                    "Housing stock" = list(
-                     "Vacant rental units (2023)" = "renter_vacant_pct2023",
-                     "Median age of home (2023)" = "med_age_home2023",
+                     "Rental vacancy rate (2023)" = "renter_vacant_pct2023",
+                     "Median year home built (2023)" = "med_age_home2023",
                      # "Affordable rent units available" = "afford_avail_units",
-                     "Affordable housing shortage (2021)" = "housing_balance"
+                     "Affordable housing shortage (2021)" = "housing_balance",
+                     "Residential permit rate (2023)" = "resunitpermitsrate23"
                    ),
-                   "Other topics" = list("Households with internet access (2023)" = "internet_hh_pct2023")
+                   "Other topics" = list("Internet access rate (2023)" = "internet_hh_pct2023")
                  ),
                  selected = "owner_occ_hh_pct2023"
                ),
@@ -241,22 +244,23 @@ ui <- navbarPage(
                      "Homeownership rate (2023)" = "owner_occ_hh_pct2023",
                      "White homeownership rate (2023)" = "white_own_occ_hh_pct2023",
                      "Black homeownership rate (2023)" = "black_own_occ_hh_pct2023",
-                     "Hispanic or Latinx homeownership rate (2023)" = "hisp_lat_own_occ_hh_pct2023",
+                     "Hispanic or Latino homeownership rate (2023)" = "hisp_lat_own_occ_hh_pct2023",
                      "Median home value (2023)" = "med_home_value2023",
-                     "Mortgage burdened households (2023)" = "mortgage_burdened_pct2023"
+                     "Mortgage burden rate (2023)" = "mortgage_burdened_pct2023"
                    ),
                    "Renter households" = list(
                      "Rentership rate (2023)" = "renter_occ_hh_pct2023",
-                     "Rent burdened households (2023)" = "rent_burdened_pct2023",
+                     "Rent burden rate (2023)" = "rent_burdened_pct2023",
                      "Median gross rent (2023)" = "med_gross_rent2023"
                    ),
                    "Housing stock" = list(
-                     "Vacant rental units (2023)" = "renter_vacant_pct2023",
-                     "Median age of home (2023)" = "med_age_home2023",
+                     "Rental vacancy rate (2023)" = "renter_vacant_pct2023",
+                     "Median year home built (2023)" = "med_age_home2023",
                      # "Affordable rent units available" = "afford_avail_units",
-                     "Affordable housing shortage (2021)" = "housing_balance"
+                     "Affordable housing shortage (2021)" = "housing_balance",
+                     "Residential permit rate (2023)" = "resunitpermitsrate23"
                    ),
-                   "Other topics" = list("Households with internet access (2023)" = "internet_hh_pct2023")
+                   "Other topics" = list("Internet access rate (2023)" = "internet_hh_pct2023")
                  ),
                  selected = "owner_occ_hh_pct2023"
                ),
@@ -286,22 +290,23 @@ ui <- navbarPage(
                      "Homeownership rate (2023)" = "owner_occ_hh_pct2023",
                      "White homeownership rate (2023)" = "white_own_occ_hh_pct2023",
                      "Black homeownership rate (2023)" = "black_own_occ_hh_pct2023",
-                     "Hispanic or Latinx homeownership rate (2023)" = "hisp_lat_own_occ_hh_pct2023",
+                     "Hispanic or Latino homeownership rate (2023)" = "hisp_lat_own_occ_hh_pct2023",
                      "Median home value (2023)" = "med_home_value2023",
-                     "Mortgage burdened households (2023)" = "mortgage_burdened_pct2023"
+                     "Mortgage burden rate (2023)" = "mortgage_burdened_pct2023"
                    ),
                    "Renter households" = list(
                      "Rentership rate (2023)" = "renter_occ_hh_pct2023",
-                     "Rent burdened households (2023)" = "rent_burdened_pct2023",
+                     "Rent burden rate (2023)" = "rent_burdened_pct2023",
                      "Median gross rent (2023)" = "med_gross_rent2023"
                    ),
                    "Housing stock" = list(
-                     "Vacant rental units (2023)" = "renter_vacant_pct2023",
-                     "Median age of home (2023)" = "med_age_home2023",
+                     "Rental vacancy rate (2023)" = "renter_vacant_pct2023",
+                     "Median year home built (2023)" = "med_age_home2023",
                      # "Affordable rent units available" = "afford_avail_units",
-                     "Affordable housing shortage (2021)" = "housing_balance"
+                     "Affordable housing shortage (2021)" = "housing_balance",
+                     "Residential permit rate (2023)" = "resunitpermitsrate23"
                    ),
-                   "Other topics" = list("Households with internet access (2023)" = "internet_hh_pct2023")
+                   "Other topics" = list("Internet access rate (2023)" = "internet_hh_pct2023")
                  ),
                  selected = "owner_occ_hh_pct2023"
                ),
@@ -326,13 +331,14 @@ ui <- navbarPage(
            sidebarLayout(
              sidebarPanel(
                img(src = 'PA.png', width = "100%"),
+               p("St. Lawrence Catholic Church, Harrisburg, PA"),
                p("Source: The Brookings Institute.")
              ),
              mainPanel(
                h2("Pennsylvania Housing Explorer"),
-               p("Last update: May 30, 2025"),
+               p("Last update: July 1, 2025"),
                p(
-                 "This dashboard is a collaboration between the Pennsylvania Housing Finance Agency and the Housing Initiative at Penn. The dashboard shows current housing trends across Pennsylvania counties based on data from the U.S. Census Bureau 5-year American Community Survey and U.S. Department of Housing and Urban Development’s Comprehensive Housing Affordability Strategy."
+                 "This dashboard is a collaboration between the Pennsylvania Housing Finance Agency and the Housing Initiative at Penn. The dashboard shows current housing trends across Pennsylvania counties based on data from the U.S. Census Bureau 5-year American Community Survey and U.S. Department of Housing and Urban Development’s Comprehensive Housing Affordability Strategy dataset."
                ),
                h4("About Pennsylvania Housing Finance Agency"),
                p(
@@ -350,8 +356,8 @@ ui <- navbarPage(
                p(
                  "All data in this dashboard comes from the",
                  a(href = "https://www.census.gov/programs-surveys/acs/news/data-releases.2023.html#list-tab-1133175109", "American Community Survey's"),
-                 " 2023 5-year-estimates, with the exception of the Affordable Housing Shortage variable, which is from HUD’s Comprehensive Housing Affordability Strategy dataset (2021). All census data was accessed through the US Census Bureau API using the tidycensus package in R. All data processing and preparation was completed using the following R packages: dplyr, tigris, sf, stringr, tidyr. This dashboard was made entirely using the R-language in Posit's Shiny app interface, and visualizations were made using the R packages leaflet, plotly, ggplot2, and pander. Full documentation for this project can be found here:",
-                 a(href = 'https://github.com/housinginitiative/PHFA-Housing-Dash', 'github repository')
+                 " 2023 5-year-estimates, with the exception of the Affordable Housing Shortage variable, which is from HUD’s Comprehensive Housing Affordability Strategy dataset (2021). All census data was accessed through the US Census Bureau API using the tidycensus package in R. All data processing and preparation was completed using the following R packages: dplyr, tigris, sf, stringr, tidyr. This dashboard was made entirely using the R-language in Posit's Shiny app interface, and visualizations were made using the R packages leaflet, plotly, ggplot2, and pander. Full documentation for this project can be found here",
+                 a(href = 'https://github.com/housinginitiative/PHFA-Housing-Dash', " at the dashboard's GitHub repository")
                ),
                h4("Get in touch"),
                p(
@@ -363,8 +369,12 @@ ui <- navbarPage(
         <a href='mailto:asechrist@phfa.org'>asechrist@phfa.org</a>"
                  )
                ),
-        img(src = 'hip_logo.png', height = 140),
-        img(src = 'phfa_logo.png', height = 140)
+               tags$a(
+                 tags$img(src = 'hip_logo.png', height = 140), href = "https://www.housinginitiative.org/"
+                 ),
+               tags$a(
+                 tags$img(src = 'phfa_logo.png', height = 140), href = "https://www.phfa.org/"
+               ),
              )
            ))
 )
