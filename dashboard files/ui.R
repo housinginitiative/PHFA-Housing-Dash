@@ -336,7 +336,7 @@ ui <- navbarPage(
              ),
              mainPanel(
                h2("Pennsylvania Housing Explorer"),
-               p("Last update: July 1, 2025"),
+               p("Last update: November 2025"),
                p(
                  "This dashboard is a collaboration between the Pennsylvania Housing Finance Agency and the Housing Initiative at Penn. The dashboard shows current housing trends across Pennsylvania counties based on data from the U.S. Census Bureau 5-year American Community Survey and U.S. Department of Housing and Urban Development’s Comprehensive Housing Affordability Strategy dataset."
                ),

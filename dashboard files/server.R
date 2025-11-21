@@ -178,7 +178,7 @@ barp <- ggplot(data = df, aes(x = reorder(county, order_id), y = variable_bar)) 
   geom_bar(color = "transparent", stat = "identity", aes(fill = as.factor(rural), text = hover_text)) +
   scale_fill_manual(values = c("#4e72aa", "#94bcda")) +
   labs(title = paste(alias, "by PA county", sep = " "),
-       caption = "Pennsylvania Affordable Housing Dashboard, Housing Initiative at Penn, July 2025, https://housinginitiative.shinyapps.io/PHFA_Housing_Dashboard/. ", 
+       caption = "Pennsylvania Affordable Housing Dashboard, Housing Initiative at Penn, November 2025, https://housinginitiative.shinyapps.io/PHFA_Housing_Dashboard/. ", 
        fill = "",
        y = alias, x = "") +
   scale_y_continuous(labels = scales::number_format(prefix = prefix, suffix = suffix, big.mark = ifelse(type == "year", "", ","))) + 
@@ -190,7 +190,7 @@ ggplotly(barp,
          tooltip = "text") %>%
   plotly::layout(
     margin = list(l = 50, r = 50, b = 100, t = 50),
-    annotations = list(x = 0.5, y = -0.2, text = "Source: Pennsylvania Affordable Housing Dashboard, Housing Initiative at Penn, July 2025, https://housinginitiative.shinyapps.io/PHFA_Housing_Dashboard/. ",
+    annotations = list(x = 0.5, y = -0.2, text = "Source: Pennsylvania Affordable Housing Dashboard, Housing Initiative at Penn, November 2025, https://housinginitiative.shinyapps.io/PHFA_Housing_Dashboard/. ",
                             xref='paper', yref='paper', showarrow = F, 
                             xanchor='center', yanchor='bottom', xshift=0, yshift=0,
                             font = list(size = 12, color = "gray")),
@@ -265,7 +265,7 @@ scatterp <- ggplot(df, aes(x = variable_scatter_x, y = variable_scatter_y)) +
 ggplotly(scatterp + theme(legend.position = c(0.6, 0.6)),
          tooltip = "text") %>%
   plotly::layout(margin = list(l = 50, r = 50, b = 100, t = 50),
-                 annotations = list(x = 0.5, y = -0.2, text = "Source: Pennsylvania Affordable Housing Dashboard, Housing Initiative at Penn, July 2025, https://housinginitiative.shinyapps.io/PHFA_Housing_Dashboard/. ",
+                 annotations = list(x = 0.5, y = -0.2, text = "Source: Pennsylvania Affordable Housing Dashboard, Housing Initiative at Penn, November 2025, https://housinginitiative.shinyapps.io/PHFA_Housing_Dashboard/. ",
                                     xref='paper', yref='paper', showarrow = F,
                                     xanchor='center', yanchor='bottom', xshift=0, yshift=0,
                                     font = list(size = 12, color = "gray")),
