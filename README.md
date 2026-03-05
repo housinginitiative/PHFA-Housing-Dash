@@ -8,7 +8,7 @@ This [dashboard](https://housinginitiative.shinyapps.io/PHFA_Housing_Dashboard/)
 
 ## Data Sources and Methods
 
-The dashboard utilizes the American Community Survey's 2022 5-year estimates and the HUD’s Comprehensive Housing Affordability Strategy dataset (2019) for the Affordable Housing Shortage variable. Data was accessed through the US Census Bureau API using the `tidycensus` package, with processing and preparation done via `dplyr`, `tigris`, `sf`, `stringr`, and `tidyr`. Visualizations are created using `leaflet`, `plotly`, `ggplot2`, and `pander` in the R-language with Posit's R-Shiny app interface.
+The dashboard utilizes the American Community Survey's 2024 5-year estimates and the HUD’s Comprehensive Housing Affordability Strategy dataset (2022) for the Affordable Housing Shortage variable. Data was accessed through the US Census Bureau API using the `tidycensus` package, with processing and preparation done via `dplyr`, `tigris`, `sf`, `stringr`, and `tidyr`. Visualizations are created using `leaflet`, `plotly`, `ggplot2`, and `pander` in the R-language with Posit's R-Shiny app interface.
 
 ### Indicators
 
