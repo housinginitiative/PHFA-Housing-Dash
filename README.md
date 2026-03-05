@@ -12,39 +12,39 @@ The dashboard utilizes the American Community Survey's 2022 5-year estimates and
 
 ### Indicators
 
--   **Homeownership rate (%) 2023**
+-   **Homeownership rate (%) 2024**
     -   **Description:** The percentage of households that own their homes. A higher rate indicates a greater proportion of homeowners in the area.
-    -   **Source:** 2023 American Community Survey 5-Year Estimates, U.S. Census Bureau
--   **Rentership rate (%) 2023**
+    -   **Source:** 2024 American Community Survey 5-Year Estimates, U.S. Census Bureau
+-   **Rentership rate (%) 2024**
     -   **Description:** The share of households in a county that rent their homes. Younger households and households with limited incomes are more likely to rent than older households and households with higher incomes.
-    -   **Source:** 2023 American Community Survey 5-Year Estimates, U.S. Census Bureau
--   **Vacant rental units (%) 2023**
+    -   **Source:** 2024 American Community Survey 5-Year Estimates, U.S. Census Bureau
+-   **Vacant rental units (%) 2024**
     -   **Description:** The percentage of rental units that are currently unoccupied. A higher percentage can suggest that there's a surplus of rental housing or potentially decreased demand.
-    -   **Source:** 2023 American Community Survey 5-Year Estimates, U.S. Census Bureau
--   **Median age of home (years) 2023**
+    -   **Source:** 2024 American Community Survey 5-Year Estimates, U.S. Census Bureau
+-   **Median age of home (years) 2024**
     -   **Description:** The midpoint age of homes in a specific area. Older median ages can suggest historical or older neighborhoods, while lower values might indicate newer developments.
-    -   **Source:** 2023 American Community Survey 5-Year Estimates, U.S. Census Bureau
--   **Median home value (\$) 2023**
+    -   **Source:** 2024 American Community Survey 5-Year Estimates, U.S. Census Bureau
+-   **Median home value (\$) 2024**
     -   **Description:** The midpoint value of homes in the area. This can provide an insight into the overall affordability and property values of a region.
-    -   **Source:** 2023 American Community Survey 5-Year Estimates, U.S. Census Bureau
--   **Households with internet access (%) 2023**
+    -   **Source:** 2024 American Community Survey 5-Year Estimates, U.S. Census Bureau
+-   **Households with internet access (%) 2024**
     -   **Description:** The percentage of households that have access to the internet. This can provide insights into the area's technological infrastructure and development.
-    -   **Source:** 2023 American Community Survey 5-Year Estimates, U.S. Census Bureau
--   **Rent-burdened households (%) 2023**
+    -   **Source:** 2024 American Community Survey 5-Year Estimates, U.S. Census Bureau
+-   **Rent-burdened households (%) 2024**
     -   **Description:** The percentage of extremely low-income households spending 30% or more of their income on rent. Extremely low-income households are those with annual household incomes of $35,000 or less. This does not include households who do not pay rent.
-    -   **Source:** 2023 American Community Survey 5-Year Estimates, U.S. Census Bureau
--   **Mortgage burdened households (%) 2023**
+    -   **Source:** 2024 American Community Survey 5-Year Estimates, U.S. Census Bureau
+-   **Mortgage burdened households (%) 2024**
     -   **Description:** The percentage of extremely low-income households spending 30% or more of their incomes on mortgage payments. Extremely low-income households are those with annual household incomes of $35,000 or less. This does not include households who have finished paying their mortgage.
-    -   **Source:** 2023 American Community Survey 5-Year Estimates, U.S. Census Bureau
--   **Median gross rent (\$) 2023**
+    -   **Source:** 2024 American Community Survey 5-Year Estimates, U.S. Census Bureau
+-   **Median gross rent (\$) 2024**
     -   **Description:** The midpoint amount that households pay in total for their contract rent, utilities, and fuel costs. Higher median gross rent can indicate greater challenges with housing affordability for low-income households.
-    -   **Source:** 2023 American Community Survey 5-Year Estimates, U.S. Census Bureau
--   **Affordable housing shortage (units)**
+    -   **Source:** 2024 American Community Survey 5-Year Estimates, U.S. Census Bureau
+-   **Affordable housing shortage (units) 2022**
     -   **Description:** The difference between the demand for rental units affordable to extremely low-income households (income \< 30% of area median income) and the supply available. A positive number indicates a shortage of affordable housing units.
     -   **Source:** Comprehensive Housing Affordability Strategy (CHAS) dataset, U.S. Department of Housing and Urban Development
--   **Residential permit rate (%) 2023**
-    -   **Description:** The residential permit rate represents the number of residential permits that were approved per 10,000 housing units for each county in 2023. 'Residential permits' specifically include approvals of new, privately-owned residential construction.
-    -   **Source:** 2023 Building Permit Survey, U.S. Census Bureau
+-   **Residential permit rate (%) 2024**
+    -   **Description:** The residential permit rate represents the number of residential permits that were approved per 10,000 housing units for each county in 2024. 'Residential permits' specifically include approvals of new, privately-owned residential construction.
+    -   **Source:** 2024 Building Permit Survey, U.S. Census Bureau
 
 ## Features
 
@@ -96,4 +96,4 @@ For questions about this dashboard, please contact:
 
 
 ### Last Update  
-November 2025
+March 2026
