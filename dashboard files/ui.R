@@ -48,28 +48,28 @@ ui <- navbarPage(
         strong("Select an indicator"),
         choices = list(
           "Homeowners" = list(
-            "Homeownership rate (2023)" = "owner_occ_hh_pct2023",
-            "White homeownership rate (2023)" = "white_own_occ_hh_pct2023",
-            "Black homeownership rate (2023)" = "black_own_occ_hh_pct2023",
-            "Hispanic or Latino homeownership rate (2023)" = "hisp_lat_own_occ_hh_pct2023",
-            "Median home value (2023)" = "med_home_value2023",
-            "Mortgage burden rate (2023)" = "mortgage_burdened_pct2023"
+            "Homeownership rate (2024)" = "owner_occ_hh_pct2024",
+            "White homeownership rate (2024)" = "white_own_occ_hh_pct2024",
+            "Black homeownership rate (2024)" = "black_own_occ_hh_pct2024",
+            "Hispanic or Latino homeownership rate (2024)" = "hisp_lat_own_occ_hh_pct2024",
+            "Median home value (2024)" = "med_home_value2024",
+            "Mortgage burden rate (2024)" = "mortgage_burdened_pct2024"
           ),
           "Renter households" = list(
-            "Rentership rate (2023)" = "renter_occ_hh_pct2023",
-            "Rent burden rate (2023)" = "rent_burdened_pct2023",
-            "Median gross rent (2023)" = "med_gross_rent2023"
+            "Rentership rate (2024)" = "renter_occ_hh_pct2024",
+            "Rent burden rate (2024)" = "rent_burdened_pct2024",
+            "Median gross rent (2024)" = "med_gross_rent2024"
           ),
           "Housing stock" = list(
-            "Rental vacancy rate (2023)" = "renter_vacant_pct2023",
-            "Median year home built (2023)" = "med_age_home2023",
+            "Rental vacancy rate (2024)" = "renter_vacant_pct2024",
+            "Median year home built (2024)" = "med_age_home2024",
             # "Affordable rent units available" = "afford_avail_units",
-            "Affordable housing shortage (2021)" = "housing_balance",
-            "Residential permit rate (2023)" = "resunitpermitsrate23"
+            "Affordable housing shortage (2022)" = "housing_balance",
+            "Residential permit rate (2024)" = "resunitpermitsrate24"
           ),
-          "Other topics" = list("Internet access rate (2023)" = "internet_hh_pct2023")
+          "Other topics" = list("Internet access rate (2024)" = "internet_hh_pct2024")
         ),
-        selected = "owner_occ_hh_pct2023"
+        selected = "owner_occ_hh_pct2024"
       ),
       strong("About this indicator"),
       p(textOutput("indicator_desc_text")),
@@ -79,7 +79,7 @@ ui <- navbarPage(
   ),
   ##### Barplot #####
   tabPanel(
-    "County comparisons",
+    "County Comparisons",
     tags$head(includeCSS("styles.css")),
     sidebarLayout(
       sidebarPanel2(
@@ -90,28 +90,28 @@ ui <- navbarPage(
           "Select a variable",
           choices = list(
             "Homeowners" = list(
-              "Homeownership rate (2023)" = "owner_occ_hh_pct2023",
-              "White homeownership rate (2023)" = "white_own_occ_hh_pct2023",
-              "Black homeownership rate (2023)" = "black_own_occ_hh_pct2023",
-              "Hispanic or Latino homeownership rate (2023)" = "hisp_lat_own_occ_hh_pct2023",
-              "Median home value (2023)" = "med_home_value2023",
-              "Mortgage burden rate (2023)" = "mortgage_burdened_pct2023"
+              "Homeownership rate (2024)" = "owner_occ_hh_pct2024",
+              "White homeownership rate (2024)" = "white_own_occ_hh_pct2024",
+              "Black homeownership rate (2024)" = "black_own_occ_hh_pct2024",
+              "Hispanic or Latino homeownership rate (2024)" = "hisp_lat_own_occ_hh_pct2024",
+              "Median home value (2024)" = "med_home_value2024",
+              "Mortgage burden rate (2024)" = "mortgage_burdened_pct2024"
             ),
             "Renter households" = list(
-              "Rentership rate (2023)" = "renter_occ_hh_pct2023",
-              "Rent burden rate (2023)" = "rent_burdened_pct2023",
-              "Median gross rent (2023)" = "med_gross_rent2023"
+              "Rentership rate (2024)" = "renter_occ_hh_pct2024",
+              "Rent burden rate (2024)" = "rent_burdened_pct2024",
+              "Median gross rent (2024)" = "med_gross_rent2024"
             ),
             "Housing stock" = list(
-              "Rental vacancy rate (2023)" = "renter_vacant_pct2023",
-              "Median year home built (2023)" = "med_age_home2023",
+              "Rental vacancy rate (2024)" = "renter_vacant_pct2024",
+              "Median year home built (2024)" = "med_age_home2024",
               # "Affordable rent units available" = "afford_avail_units",
-              "Affordable housing shortage (2021)" = "housing_balance",
-              "Residential permit rate (2023)" = "resunitpermitsrate23"
+              "Affordable housing shortage (2022)" = "housing_balance",
+              "Residential permit rate (2024)" = "resunitpermitsrate24"
             ),
-            "Other topics" = list("Internet access rate (2023)" = "internet_hh_pct2023")
+            "Other topics" = list("Internet access rate (2024)" = "internet_hh_pct2024")
           ),
-          selected = "owner_occ_hh_pct2023"
+          selected = "owner_occ_hh_pct2024"
         ),
         selectInput(
           "barp_counties",
@@ -203,7 +203,7 @@ ui <- navbarPage(
   ),
   
   ##### Scatterplot #####
-  tabPanel("Data plotter",
+  tabPanel("Data Plotter",
            sidebarLayout(
              sidebarPanel2(
                width = 3,
@@ -213,56 +213,56 @@ ui <- navbarPage(
                  "X variable",
                  choices = list(
                    "Homeowners" = list(
-                     "Homeownership rate (2023)" = "owner_occ_hh_pct2023",
-                     "White homeownership rate (2023)" = "white_own_occ_hh_pct2023",
-                     "Black homeownership rate (2023)" = "black_own_occ_hh_pct2023",
-                     "Hispanic or Latino homeownership rate (2023)" = "hisp_lat_own_occ_hh_pct2023",
-                     "Median home value (2023)" = "med_home_value2023",
-                     "Mortgage burden rate (2023)" = "mortgage_burdened_pct2023"
+                     "Homeownership rate (2024)" = "owner_occ_hh_pct2024",
+                     "White homeownership rate (2024)" = "white_own_occ_hh_pct2024",
+                     "Black homeownership rate (2024)" = "black_own_occ_hh_pct2024",
+                     "Hispanic or Latino homeownership rate (2024)" = "hisp_lat_own_occ_hh_pct2024",
+                     "Median home value (2024)" = "med_home_value2024",
+                     "Mortgage burden rate (2024)" = "mortgage_burdened_pct2024"
                    ),
                    "Renter households" = list(
-                     "Rentership rate (2023)" = "renter_occ_hh_pct2023",
-                     "Rent burden rate (2023)" = "rent_burdened_pct2023",
-                     "Median gross rent (2023)" = "med_gross_rent2023"
+                     "Rentership rate (2024)" = "renter_occ_hh_pct2024",
+                     "Rent burden rate (2024)" = "rent_burdened_pct2024",
+                     "Median gross rent (2024)" = "med_gross_rent2024"
                    ),
                    "Housing stock" = list(
-                     "Rental vacancy rate (2023)" = "renter_vacant_pct2023",
-                     "Median year home built (2023)" = "med_age_home2023",
+                     "Rental vacancy rate (2024)" = "renter_vacant_pct2024",
+                     "Median year home built (2024)" = "med_age_home2024",
                      # "Affordable rent units available" = "afford_avail_units",
-                     "Affordable housing shortage (2021)" = "housing_balance",
-                     "Residential permit rate (2023)" = "resunitpermitsrate23"
+                     "Affordable housing shortage (2022)" = "housing_balance",
+                     "Residential permit rate (2024)" = "resunitpermitsrate24"
                    ),
-                   "Other topics" = list("Internet access rate (2023)" = "internet_hh_pct2023")
+                   "Other topics" = list("Internet access rate (2024)" = "internet_hh_pct2024")
                  ),
-                 selected = "owner_occ_hh_pct2023"
+                 selected = "owner_occ_hh_pct2024"
                ),
                selectInput(
                  "variable_scatter_y",
                  "Y variable",
                  choices = list(
                    "Homeowners" = list(
-                     "Homeownership rate (2023)" = "owner_occ_hh_pct2023",
-                     "White homeownership rate (2023)" = "white_own_occ_hh_pct2023",
-                     "Black homeownership rate (2023)" = "black_own_occ_hh_pct2023",
-                     "Hispanic or Latino homeownership rate (2023)" = "hisp_lat_own_occ_hh_pct2023",
-                     "Median home value (2023)" = "med_home_value2023",
-                     "Mortgage burden rate (2023)" = "mortgage_burdened_pct2023"
+                     "Homeownership rate (2024)" = "owner_occ_hh_pct2024",
+                     "White homeownership rate (2024)" = "white_own_occ_hh_pct2024",
+                     "Black homeownership rate (2024)" = "black_own_occ_hh_pct2024",
+                     "Hispanic or Latino homeownership rate (2024)" = "hisp_lat_own_occ_hh_pct2024",
+                     "Median home value (2024)" = "med_home_value2024",
+                     "Mortgage burden rate (2024)" = "mortgage_burdened_pct2024"
                    ),
                    "Renter households" = list(
-                     "Rentership rate (2023)" = "renter_occ_hh_pct2023",
-                     "Rent burden rate (2023)" = "rent_burdened_pct2023",
-                     "Median gross rent (2023)" = "med_gross_rent2023"
+                     "Rentership rate (2024)" = "renter_occ_hh_pct2024",
+                     "Rent burden rate (2024)" = "rent_burdened_pct2024",
+                     "Median gross rent (2024)" = "med_gross_rent2024"
                    ),
                    "Housing stock" = list(
-                     "Rental vacancy rate (2023)" = "renter_vacant_pct2023",
-                     "Median year home built (2023)" = "med_age_home2023",
+                     "Rental vacancy rate (2024)" = "renter_vacant_pct2024",
+                     "Median year home built (2024)" = "med_age_home2024",
                      # "Affordable rent units available" = "afford_avail_units",
-                     "Affordable housing shortage (2021)" = "housing_balance",
-                     "Residential permit rate (2023)" = "resunitpermitsrate23"
+                     "Affordable housing shortage (2022)" = "housing_balance",
+                     "Residential permit rate (2024)" = "resunitpermitsrate24"
                    ),
-                   "Other topics" = list("Internet access rate (2023)" = "internet_hh_pct2023")
+                   "Other topics" = list("Internet access rate (2024)" = "internet_hh_pct2024")
                  ),
-                 selected = "owner_occ_hh_pct2023"
+                 selected = "owner_occ_hh_pct2024"
                ),
                shiny::p(
                  "Use this scatter plot to visualize the relationship between any two housing indicators. Click on the home icon to reset zoom/axes."
@@ -287,28 +287,28 @@ ui <- navbarPage(
                  "Select a variable",
                  choices = list(
                    "Homeowners" = list(
-                     "Homeownership rate (2023)" = "owner_occ_hh_pct2023",
-                     "White homeownership rate (2023)" = "white_own_occ_hh_pct2023",
-                     "Black homeownership rate (2023)" = "black_own_occ_hh_pct2023",
-                     "Hispanic or Latino homeownership rate (2023)" = "hisp_lat_own_occ_hh_pct2023",
-                     "Median home value (2023)" = "med_home_value2023",
-                     "Mortgage burden rate (2023)" = "mortgage_burdened_pct2023"
+                     "Homeownership rate (2024)" = "owner_occ_hh_pct2024",
+                     "White homeownership rate (2024)" = "white_own_occ_hh_pct2024",
+                     "Black homeownership rate (2024)" = "black_own_occ_hh_pct2024",
+                     "Hispanic or Latino homeownership rate (2024)" = "hisp_lat_own_occ_hh_pct2024",
+                     "Median home value (2024)" = "med_home_value2024",
+                     "Mortgage burden rate (2024)" = "mortgage_burdened_pct2024"
                    ),
                    "Renter households" = list(
-                     "Rentership rate (2023)" = "renter_occ_hh_pct2023",
-                     "Rent burden rate (2023)" = "rent_burdened_pct2023",
-                     "Median gross rent (2023)" = "med_gross_rent2023"
+                     "Rentership rate (2024)" = "renter_occ_hh_pct2024",
+                     "Rent burden rate (2024)" = "rent_burdened_pct2024",
+                     "Median gross rent (2024)" = "med_gross_rent2024"
                    ),
                    "Housing stock" = list(
-                     "Rental vacancy rate (2023)" = "renter_vacant_pct2023",
-                     "Median year home built (2023)" = "med_age_home2023",
+                     "Rental vacancy rate (2024)" = "renter_vacant_pct2024",
+                     "Median year home built (2024)" = "med_age_home2024",
                      # "Affordable rent units available" = "afford_avail_units",
-                     "Affordable housing shortage (2021)" = "housing_balance",
-                     "Residential permit rate (2023)" = "resunitpermitsrate23"
+                     "Affordable housing shortage (2022)" = "housing_balance",
+                     "Residential permit rate (2024)" = "resunitpermitsrate24"
                    ),
-                   "Other topics" = list("Internet access rate (2023)" = "internet_hh_pct2023")
+                   "Other topics" = list("Internet access rate (2024)" = "internet_hh_pct2024")
                  ),
-                 selected = "owner_occ_hh_pct2023"
+                 selected = "owner_occ_hh_pct2024"
                ),
                shiny::p(
                  "Use this table to view data for any indicator by county. Data used in this dashboard can be downloaded as a CSV file."
@@ -327,7 +327,7 @@ ui <- navbarPage(
              )
            )),
   ##### About #####
-  tabPanel("About this site",
+  tabPanel("About This Site",
            sidebarLayout(
              sidebarPanel(
                img(src = 'PA.png', width = "100%"),
@@ -336,7 +336,7 @@ ui <- navbarPage(
              ),
              mainPanel(
                h2("Pennsylvania Housing Explorer"),
-               p("Last update: November 2025"),
+               p("Last update: March 2026"),
                p(
                  "This dashboard is a collaboration between the Pennsylvania Housing Finance Agency and the Housing Initiative at Penn. The dashboard shows current housing trends across Pennsylvania counties based on data from the U.S. Census Bureau 5-year American Community Survey and U.S. Department of Housing and Urban Development’s Comprehensive Housing Affordability Strategy dataset."
                ),
@@ -355,8 +355,8 @@ ui <- navbarPage(
                h4("Methods"),
                p(
                  "All data in this dashboard comes from the",
-                 a(href = "https://www.census.gov/programs-surveys/acs/news/data-releases.2023.html#list-tab-1133175109", "American Community Survey's"),
-                 " 2023 5-year-estimates, with the exception of the Affordable Housing Shortage variable, which is from HUD’s Comprehensive Housing Affordability Strategy dataset (2021). All census data was accessed through the US Census Bureau API using the tidycensus package in R. All data processing and preparation was completed using the following R packages: dplyr, tigris, sf, stringr, tidyr. This dashboard was made entirely using the R-language in Posit's Shiny app interface, and visualizations were made using the R packages leaflet, plotly, ggplot2, and pander. Full documentation for this project can be found here",
+                 a(href = "https://www.census.gov/programs-surveys/acs/news/data-releases.2024.html#list-tab-1133175109", "American Community Survey's"),
+                 " 2024 5-year-estimates, with the exception of the Affordable Housing Shortage variable, which is from HUD’s Comprehensive Housing Affordability Strategy dataset (2022). All census data was accessed through the US Census Bureau API using the tidycensus package in R. All data processing and preparation was completed using the following R packages: dplyr, tigris, sf, stringr, tidyr. This dashboard was made entirely using the R-language in Posit's Shiny app interface, and visualizations were made using the R packages leaflet, plotly, ggplot2, and pander. Full documentation for this project can be found here",
                  a(href = 'https://github.com/housinginitiative/PHFA-Housing-Dash', " at the dashboard's GitHub repository")
                ),
                h4("Get in touch"),
